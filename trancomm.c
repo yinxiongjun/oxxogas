@@ -735,6 +735,7 @@ int ProcRspPacket(void)
 		else
 		{
 			ProcFaildTransField63(glRecvPack.szField63);
+			return -1;
 		}
 		//60 field
 		if(strlen(glRecvPack.szField60) !=0)
@@ -749,12 +750,12 @@ int ProcRspPacket(void)
 	}
 	else 	//bank platform
 	{
-		//get rule ,balance,preauth
-		printf("glRecvPack.szMsgCode:%s\n",glRecvPack.szMsgCode);
+		PrintDebug("%s %s \%s", "glRecvPack.szMsgCode:",glRecvPack.szMsgCode,glRecvPack.szRspCode);
 		if( strcmp((char*)glRecvPack.szRspCode,"00") != 0 )
 		{
 			ProcFaildTransField63(glRecvPack.szField63);
-			return OK;
+			//return OK;
+			return -1;
 		}
 		if( strcmp((char*)glRecvPack.szMsgCode,"0110") == 0 )
 		{			
@@ -795,7 +796,7 @@ int ProcRspPacket(void)
 			if ( TempPoint == NULL ) 
 			{
 				lcdClrLine(2, 7);	
-				DispMulLanguageString(0, 4, DISP_CFONT|DISP_MEDIACY, NULL, "Codigos de ERROR");
+				DispMulLanguageString(0, 4, DISP_CFONT|DISP_MEDIACY, NULL, "Codigos de Error");
 				lcdFlip();
 				ErrorBeep();
 				kbGetKeyMs(3000);
@@ -1267,6 +1268,12 @@ void ProcFaildTransField63(uint8_t *field63)
 			szLen = atoi(szParams);
 			strncpy(PosComconTrol.szRM,Temp1+8,szLen);
 			PosComconTrol.szRM[szLen] = '\0';
+
+			lcdClrLine(2, 7);	
+			DispMulLanguageString(0, 4, DISP_CFONT|DISP_MEDIACY, NULL, PosComconTrol.szRM);
+			lcdFlip();
+			ErrorBeep();
+			kbGetKeyMs(3000);
 		}
 
 	}

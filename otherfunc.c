@@ -494,6 +494,7 @@ uint8_t AppGetCtlvalue(uint8_t flag)
 	uint8_t buf[20]={0};
 	uint8_t buf2[100];
 	uint8_t old_transid =0;
+	uint8_t old_transflag =0;
 	char* Temp2;
 	char menuflag1,menuflag2,menuflag3;
 	
@@ -533,6 +534,7 @@ uint8_t AppGetCtlvalue(uint8_t flag)
 		
 
 		    	iRet = DispDynamicMenu(1);
+			
 			if( iRet == 255 )		//NO_TRANS
 			{
 				return NO_DISP;
@@ -713,7 +715,7 @@ uint8_t AppGetCtlvalue(uint8_t flag)
 			lcdCls();
 			lcdSetFont("/usr/share/fonts/wqy-microhei.ttf", "GBK", 0, 20, 0);
 			DispMulLanguageString(0, 0, DISP_HFONT16|DISP_MEDIACY|DISP_INVLINE, NULL, (char*)"VENTA");
-			DispMulLanguageString(0, 4, DISP_CFONT|DISP_MEDIACY, NULL, "Ingrese NIP:");
+			DispMulLanguageString(0, 4, DISP_CFONT|DISP_MEDIACY, NULL, "Ingrese Nip:");
 			lcdFlip();
 			lcdSetFont("/usr/share/fonts/wqy-microhei.ttf", "GBK", 0, 30, 0);
 			lcdGoto(120, 5);
@@ -728,14 +730,17 @@ uint8_t AppGetCtlvalue(uint8_t flag)
 				memset(PosCom.stTrans.nip,0,sizeof(PosCom.stTrans.nip));
 				strcpy(PosCom.stTrans.nip,(char*) buf);
 			}
-
 			break;
 		case PURSE_EDENRED:
-			old_transid = PosCom.stTrans.iTransNo;
-			PosCom.stTrans.iTransNo= PURSE_GETBALANCE;
-			iRet = GetBalance_FromBankPlat(PosCom.stTrans.TransFlag);
-			PosCom.stTrans.iTransNo = old_transid;
+			old_transflag = PosCom.stTrans.iTransNo;
+			old_transid = stTemp.iTransNo;
 			
+			PosCom.stTrans.iTransNo= PURSE_GETBALANCE;
+			stTemp.iTransNo= PURSE_GETBALANCE;
+
+			iRet = GetBalance_FromBankPlat(PosCom.stTrans.TransFlag);
+			PosCom.stTrans.iTransNo = old_transflag;
+			stTemp.iTransNo = old_transid;
 			if(iRet !=OK)
 			{
 				return iRet;
@@ -1538,8 +1543,17 @@ int SelectTrans(void)
 			return OK;
 			break;
 		case KEY6:
-			stTemp.iTransNo = PURSE_GETBALANCE;
-			return OK;
+			iRet =DispCheck_Balance();
+			if(iRet ==OK)
+			{
+				printf("transno: %d;stTrans.TransFlag:%d\n",stTemp.iTransNo,PosCom.stTrans.TransFlag);
+				return OK;
+			}
+			else 
+			{
+				return NO_DISP;
+			}
+			//return OK;
 			break;
 		case KEY7:
 			stTemp.iTransNo = PRE_VOL_CTL;

@@ -6135,6 +6135,20 @@ uint8_t Get_Rule_Balance_Feild63(uint8_t *szField63Buff)
 		szParaNum++;
 		szParaLen += strlen(szTemp4);
 
+		sprintf(szTemp5,"Y5%05d%s",strlen(PosCom.stTrans.oil_id),PosCom.stTrans.oil_id);
+		szParaNum++;
+		szParaLen += strlen(szTemp5);
+		
+		//complete fill in  packet	
+		szTotalLen += 13;            // 本身长度
+		szTotalLen += szParaLen;     // 其他参数长度
+		sprintf(szTotalLenTemp,"& 000%02d%05d!",szParaNum,szTotalLen);
+
+		sprintf((char*)szField63Buff,"%s%s%s%s%s%s%s%s%s%s%s%s",szTotalLenTemp,szSTTemp,szDM,szSNTemp,szLGTemp,szV1,szAv,
+			szTemp1,szTemp2,szTemp3,szTemp4,szTemp5);
+		
+
+/*
 		if(stPosParam.stVolContrFlg ==PARAM_OPEN)
 		{
 			sprintf(szTemp5,"Y5%05d%s",strlen(PosCom.stTrans.oil_id),PosCom.stTrans.oil_id);
@@ -6151,7 +6165,8 @@ uint8_t Get_Rule_Balance_Feild63(uint8_t *szField63Buff)
 					szTemp1,szTemp2,szTemp3,szTemp4,szTemp5);
 			}
 		}
-		else{	
+		else
+		{	
 			//complete fill in  packet	
 			szTotalLen += 13;            // 本身长度
 			szTotalLen += szParaLen;     // 其他参数长度
@@ -6162,7 +6177,7 @@ uint8_t Get_Rule_Balance_Feild63(uint8_t *szField63Buff)
 					szTemp1,szTemp2,szTemp3,szTemp4);
 			}
 		}
-		
+*/	
 	}
 	else if(stTemp.iTransNo ==PURSE_GETBALANCE)
 	{
@@ -9765,7 +9780,7 @@ uint8_t GetBalance_FromBankPlat(int flag)
 	uint8_t   Amount[6];
 	
 	uint8_t sTempBuff[60] ={0};
-	char szField63BuffTemp[500] ={0};
+	char szField63BuffTemp[999] ={0};
 	char buf[50] ={0};
 	
 	char *Temp1 = NULL;
@@ -10520,11 +10535,13 @@ uint8_t GetRules_FromBankPlat(int flag)
 				szcount= atol((char *)sTempBuff);
 				if(PosCom.stTrans.saletype[0] == '1')
 				{
+				/*
 					szAmount = BcdToLong(PosCom.stTrans.sAmount, 6);
 					if(szcount > szAmount)
 					{
 						continue;
 					}
+				*/
 				}
 				else if(PosCom.stTrans.saletype[0] == '2')
 				{

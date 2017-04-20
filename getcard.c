@@ -205,7 +205,7 @@ void ShowGetCardScreen(uint8_t ucMode,uint8_t *pDispBuf1,uint8_t *pDispBuf2)
 	{
 	case CARD_SWIPED:
 		if (PosCom.stTrans.iTransNo == EC_TOPUP_NORAML)
-			sprintf((char *)szDispBuf, "SWIPE(TRANSFER)-->");
+			sprintf((char *)szDispBuf, "Swipe(Transfer)-->");
 		else
 			sprintf((char *)szDispBuf, "SWIPE-->");
 		break;
@@ -236,7 +236,7 @@ void ShowGetCardScreen(uint8_t ucMode,uint8_t *pDispBuf1,uint8_t *pDispBuf2)
 		break;
 
 	case CARD_INSERTED|CARD_KEYIN:
-		sprintf((char *)szDispBuf, "INSERT/MANUAL");
+		sprintf((char *)szDispBuf, "Inserte/Manual");
 		break;
 
 	case CARD_INSERTED|CARD_KEYIN|CARD_SWIPED:
@@ -249,7 +249,7 @@ void ShowGetCardScreen(uint8_t ucMode,uint8_t *pDispBuf1,uint8_t *pDispBuf2)
 		break;
 
 	case CARD_PASSIVE|CARD_INSERTED:
-		sprintf((char *)szDispBuf, "INSERTE TARJETA");
+		sprintf((char *)szDispBuf, "Insert Tarjeta");
 		break;
 
 	case CARD_INSERTED|CARD_KEYIN|CARD_SWIPED|CARD_PASSIVE:
@@ -288,7 +288,7 @@ void SaleGetCardScreen(uint8_t ucMode,uint8_t *pDispBuf1,uint8_t *pDispBuf2)
 		}
 		else
 		{
-			strcpy((char *)szDispBuf1,"      INSERTE/DESLICE      TARJETA");
+			strcpy((char *)szDispBuf1,"      Inserte/Deslice      TARJETA");
 		}
 	}
 	else
@@ -299,12 +299,12 @@ void SaleGetCardScreen(uint8_t ucMode,uint8_t *pDispBuf1,uint8_t *pDispBuf2)
 		strcpy((char *)szDispBuf1,(char *)szTmpBuff);
 		if (ucMode==CARD_SWIPED)
 		{
-			strcpy((char *)szDispBuf2,"INSERTE/DESLICE         TARJETA");
+			strcpy((char *)szDispBuf2,"Inserte/Deslice         TARJETA");
 			memset(szDispBuf1,0,sizeof(szDispBuf1));
 		}
 		else
 		{
-			strcpy((char *)szDispBuf2,"   INSERTE/DESLICE      TARJETA");
+			strcpy((char *)szDispBuf2,"   Inserte/Deslice      TARJETA");
 			memset(szDispBuf1,0,sizeof(szDispBuf1));
 		}
 	}

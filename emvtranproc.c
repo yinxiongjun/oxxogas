@@ -2039,11 +2039,12 @@ void SaveRspICCData(uint16_t uiTag, uint8_t *psData, int iDataLen)
 {
 	switch( uiTag )
 	{
+/*
 	case 0x91:
 		memcpy(sAuthData, psData, MIN(iDataLen, 16));
 		iAuthDataLen = MIN(iDataLen, 16);
 		break;
-	
+*/
 	case 0x71:
 	case 0x72:
 		sIssuerScript[iScriptLen++] = (uint8_t)uiTag;
