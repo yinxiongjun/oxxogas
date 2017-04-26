@@ -878,7 +878,14 @@ void NetpayPrtTranTicket(int flag)
 			&PosCom.stTrans.szTime[0], &PosCom.stTrans.szTime[2], &PosCom.stTrans.szTime[4]);
 		prnPrintf("\n");
 
-		prnPrintf("%s\n", "               C-L-I-E-N-T-E");
+		if(j==0)
+		{
+			prnPrintf("%s\n", "             C-O-M-E-R-C-I-O");
+		}
+		else
+		{
+			prnPrintf("%s\n", "               C-L-I-E-N-T-E");
+		}
 
 // 卡有效期
 
@@ -1038,39 +1045,42 @@ void NetpayPrtTranTicket(int flag)
 			prnPrintf("REF:   %s \n", PosCom.stTrans.szSysReferNo);
 		}
 		prnPrintf("\n");
+		if(PosCom.stTrans.PinCheckSuccessFlag == 1)
+		{
+			PrnBlackEngData();
+			prnPrintf("               PIN VERIFICADO \n");	
+		}
+		prnPrintf("\n");
+
 		if ( j==0 && stPosParam.ucTicketNum=='2' )
 		{
-/*
-			prnPrintf("\n\n");
-			prnPrintf("FIRMA");
-			PrnSmallFontData();
-			prnPrintf("_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n");
-*/
 		    PrnSmallFontData();
 		    if ( j!=2 )
 		    {
-		    	prnPrintf("CARDHOLDER SIGNATURE\n");
-		    	if (PosCom.stTrans.ucElecSignatureflag & TS_ELECSIGN_HAVE)
-			    {
-			      strcpy(buf,(char *)PosCom.stTrans.szElecfilename);
-			      strcpy(buf1,"/var/tmp/prttemp.png"); //生成临时文件
-			      iRet = jbg2png(buf,buf1);
-			      if (iRet == 0)
-			      {
-			        newprnLogo(0,0,0,0,(uint8_t *)buf1);
-			      }
-			      else
-			      {
-			        prnPrintf("\n\n\n");
-			      }
-			      fileRemove(buf1);
-			    }
-			    else
-			    {
-			      prnPrintf("\n\n\n");
-			    }
-			    prnPrintf("_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n");
-			    prnPrintf("I ACKNOWLEDGE SATISFACTORY RECEIPT OF RELATIVE  GOODS/SERVICE\n");
+		    		if (PosCom.stTrans.ucElecSignatureflag & TS_ELECSIGN_HAVE)
+				{
+				      strcpy(buf,(char *)PosCom.stTrans.szElecfilename);
+				      strcpy(buf1,"/var/tmp/prttemp.png"); //生成临时文件
+				      iRet = jbg2png(buf,buf1);
+				      if (iRet == 0)
+				      {
+				        	newprnLogo(0,0,0,0,(uint8_t *)buf1);
+				      }
+				      else
+				      {
+				        	prnPrintf("\n\n");
+				      }
+				      fileRemove(buf1);
+				 }
+				 else
+				 {
+				      prnPrintf("\n\n");
+				 }
+			    prnPrintf("FIRMA_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n");
+			    //prnPrintf("I ACKNOWLEDGE SATISFACTORY RECEIPT OF RELATIVE  GOODS/SERVICE\n");
+			    //Reconozco satisfactoriamente la recepcion de bienes relativos  /  servicios
+			    prnPrintf("RECONOZCO SATISFACTORIAMENTE LA RECEPCION DE BIENES RELATIVOS/SERVICIOS");
+
 		    }
 		}
 
@@ -1220,7 +1230,9 @@ void MakeFormatPrintDate(uint8_t *szDate,uint8_t *PrintDate)
 			break;			
 	}
 	
-	sprintf((char*)PrintDate,"%s %.2s, %.2s",month, &PosCom.stTrans.szDate[6], &PosCom.stTrans.szDate[2] );
+	//sprintf((char*)PrintDate,"%s %.2s, %.2s",month, &PosCom.stTrans.szDate[6], &PosCom.stTrans.szDate[2] );
+	sprintf((char*)PrintDate,"%.2s/%s/%.2s",&PosCom.stTrans.szDate[6],month,  &PosCom.stTrans.szDate[2] );
+	
 	//showHex((char*)"PrintDate",PrintDate,strlen((char*)PrintDate));
 }
 
@@ -5603,7 +5615,8 @@ void  NetpayPrintAmount(int flag)
 
 				memset(buf1, 0, sizeof(buf1));
 				memset(buf, 0, sizeof(buf));
-				if(PosCom.stTrans.sTipAmount !=0)
+				//if(PosCom.stTrans.sTipAmount !=0)
+				if(stPosParam.szpreTip == PARAM_OPEN)
 				{
 					ConvBcdAmount(PosCom.stTrans.sTipAmount, (uint8_t *)buf1);
 					sprintf(buf, "PROP.      $            %s\n", buf1);

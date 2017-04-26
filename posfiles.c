@@ -2961,7 +2961,7 @@ uint8_t PrintTransTotal(uint8_t bPrintAll,uint8_t ucTitleFlag)
 		&PosCom.stTrans.szTransDate[4],&PosCom.stTrans.szTransDate[6],"HORA: ",
 		&PosCom.stTrans.szTime[0], &PosCom.stTrans.szTime[2], &PosCom.stTrans.szTime[4]);
 
-	prnPrintf("TORTALES");
+	prnPrintf("TOTALES");
 
 	prnPrintf("\n");
 
@@ -8891,7 +8891,7 @@ uint8_t DealTmsParam(uint8_t *temp)
 		szParamLen  = temp[iIdx]+temp[iIdx+1]*256;   // 标签i长度
 		iIdx += 2;
 		
-		if( memcmp(temp+szParamiIdx,"01000001",szParamLen) == 0 )
+		if( memcmp(temp+szParamiIdx,"01000099",szParamLen) == 0 )
 		{
 			szParamContentiIdx  = temp[iIdx]+temp[iIdx+1]*256;   // 标签内容偏移地址
 			iIdx += 2;
@@ -8901,7 +8901,7 @@ uint8_t DealTmsParam(uint8_t *temp)
 			memset(stPosParam.szUnitNum,0,sizeof(stPosParam.szUnitNum));
 			memcpy(stPosParam.szUnitNum,temp+szParamContentiIdx,szParamContentLen);
 		}
-		else if( memcmp(temp+szParamiIdx,"33333001",szParamLen) == 0 )	//print head1
+		else if( memcmp(temp+szParamiIdx,"66666001",szParamLen) == 0 )	//print head1
 		{
 			szParamContentiIdx  = temp[iIdx]+temp[iIdx+1]*256;   // 标签内容偏移地址
 			iIdx += 2;
@@ -8911,7 +8911,7 @@ uint8_t DealTmsParam(uint8_t *temp)
 			memset(stPosParam.stHeader1,0,sizeof(stPosParam.stHeader1));
 			memcpy(stPosParam.stHeader1,temp+szParamContentiIdx,szParamContentLen);
 		}
-		else if( memcmp(temp+szParamiIdx,"33333002",szParamLen) == 0 )
+		else if( memcmp(temp+szParamiIdx,"66666002",szParamLen) == 0 )
 		{
 			szParamContentiIdx  = temp[iIdx]+temp[iIdx+1]*256;   // 标签内容偏移地址
 			iIdx += 2;
@@ -8922,7 +8922,7 @@ uint8_t DealTmsParam(uint8_t *temp)
 			memset(stPosParam.stAddress1,0,sizeof(stPosParam.stAddress1));
 			memcpy(stPosParam.stAddress1,temp+szParamContentiIdx,szParamContentLen);
 		}
-		else if( memcmp(temp+szParamiIdx,"33333003",szParamLen) == 0 )
+		else if( memcmp(temp+szParamiIdx,"66666003",szParamLen) == 0 )
 		{
 			szParamContentiIdx  = temp[iIdx]+temp[iIdx+1]*256;   // 标签内容偏移地址
 			iIdx += 2;
@@ -8933,7 +8933,7 @@ uint8_t DealTmsParam(uint8_t *temp)
 			memset(stPosParam.stAddress2,0,sizeof(stPosParam.stAddress2));
 			memcpy(stPosParam.stAddress2,temp+szParamContentiIdx,szParamContentLen);		
 		}
-		else if( memcmp(temp+szParamiIdx,"33333004",szParamLen) == 0 )
+		else if( memcmp(temp+szParamiIdx,"66666004",szParamLen) == 0 )
 		{
 			szParamContentiIdx  = temp[iIdx]+temp[iIdx+1]*256;   // 标签内容偏移地址
 			iIdx += 2;
@@ -8944,7 +8944,7 @@ uint8_t DealTmsParam(uint8_t *temp)
 			memset(stPosParam.stAddress3,0,sizeof(stPosParam.stAddress2));
 			memcpy(stPosParam.stAddress3,temp+szParamContentiIdx,szParamContentLen);
 		}
-		else if( memcmp(temp+szParamiIdx,"33333005",szParamLen) == 0 )
+		else if( memcmp(temp+szParamiIdx,"66666005",szParamLen) == 0 )
 		{
 			szParamContentiIdx  = temp[iIdx]+temp[iIdx+1]*256;   // 标签内容偏移地址
 			iIdx += 2;
@@ -8955,7 +8955,7 @@ uint8_t DealTmsParam(uint8_t *temp)
 			memset(stPosParam.stAffId,0,sizeof(stPosParam.stAffId));
 			memcpy(stPosParam.stAffId,temp+szParamContentiIdx,szParamContentLen);
 		}
-		else if( memcmp(temp+szParamiIdx,"33333006",szParamLen) == 0 )
+		else if( memcmp(temp+szParamiIdx,"66666006",szParamLen) == 0 )
 		{
 			szParamContentiIdx  = temp[iIdx]+temp[iIdx+1]*256;   // 标签内容偏移地址
 			iIdx += 2;
@@ -8966,7 +8966,7 @@ uint8_t DealTmsParam(uint8_t *temp)
 			memset(stPosParam.stTerminalId,0,sizeof(stPosParam.stTerminalId));
 			memcpy(stPosParam.stTerminalId,temp+szParamContentiIdx,szParamContentLen);
 		}
-		else if( memcmp(temp+szParamiIdx,"33333007",szParamLen) == 0 )
+		else if( memcmp(temp+szParamiIdx,"66666007",szParamLen) == 0 )
 		{
 			szParamContentiIdx  = temp[iIdx]+temp[iIdx+1]*256;   // 标签内容偏移地址
 			iIdx += 2;
@@ -8977,7 +8977,7 @@ uint8_t DealTmsParam(uint8_t *temp)
 			memset(stPosParam.stETerm,0,sizeof(stPosParam.stETerm));
 			memcpy(stPosParam.stETerm,temp+szParamContentiIdx,szParamContentLen);		
 		}
-		else if( memcmp(temp+szParamiIdx,"33333008",szParamLen) == 0 )  //电子签名
+		else if( memcmp(temp+szParamiIdx,"66666008",szParamLen) == 0 )  //电子签名
 		{
 			szParamContentiIdx  = temp[iIdx]+temp[iIdx+1]*256;   // 标签内容偏移地址
 			iIdx += 2;
@@ -8988,7 +8988,7 @@ uint8_t DealTmsParam(uint8_t *temp)
 			memset(stPosParam.stETId,0,sizeof(stPosParam.stETId));
 			memcpy(stPosParam.stETId,temp+szParamContentiIdx,szParamContentLen);	
 		}
-		else if( memcmp(temp+szParamiIdx,"33333009",szParamLen) == 0 )
+		else if( memcmp(temp+szParamiIdx,"66666009",szParamLen) == 0 )
 		{
 			szParamContentiIdx  = temp[iIdx]+temp[iIdx+1]*256;   // 标签内容偏移地址
 			iIdx += 2;
@@ -9000,7 +9000,7 @@ uint8_t DealTmsParam(uint8_t *temp)
 			memset(stPosParam.stPCpass,0,sizeof(stPosParam.stPCpass));
 			memcpy(stPosParam.stPCpass,temp+szParamContentiIdx,szParamContentLen);
 		}		//33333009已经被使用
-		else if( memcmp(temp+szParamiIdx,"33333010",szParamLen) == 0 )
+		else if( memcmp(temp+szParamiIdx,"66666010",szParamLen) == 0 )
 		{
 			szParamContentiIdx  = temp[iIdx]+temp[iIdx+1]*256;   // 标签内容偏移地址
 			iIdx += 2;
@@ -9011,7 +9011,7 @@ uint8_t DealTmsParam(uint8_t *temp)
 			memset(stPosParam.stPCPid,0,sizeof(stPosParam.stPCPid));
 			memcpy(stPosParam.stPCPid,temp+szParamContentiIdx,szParamContentLen);
 		}
-		else if( memcmp(temp+szParamiIdx,"33333011",szParamLen) == 0 )
+		else if( memcmp(temp+szParamiIdx,"66666011",szParamLen) == 0 )
 		{
 			szParamContentiIdx  = temp[iIdx]+temp[iIdx+1]*256;   // 标签内容偏移地址
 			iIdx += 2;
@@ -9022,7 +9022,7 @@ uint8_t DealTmsParam(uint8_t *temp)
 			memset(stPosParam.stPCSerial,0,sizeof(stPosParam.stPCSerial));
 			memcpy(stPosParam.stPCSerial,temp+szParamContentiIdx,szParamContentLen);
 		}
-		else if( memcmp(temp+szParamiIdx,"33333012",szParamLen) == 0 )
+		else if( memcmp(temp+szParamiIdx,"66666012",szParamLen) == 0 )
 		{
 			szParamContentiIdx  = temp[iIdx]+temp[iIdx+1]*256;   // 标签内容偏移地址
 			iIdx += 2;
@@ -9033,7 +9033,7 @@ uint8_t DealTmsParam(uint8_t *temp)
 			memset(stPosParam.stSodexoTId,0,sizeof(stPosParam.stSodexoTId));
 			memcpy(stPosParam.stSodexoTId,temp+szParamContentiIdx,szParamContentLen);		
 		}
-		else if( memcmp(temp+szParamiIdx,"33333013",szParamLen) == 0 )
+		else if( memcmp(temp+szParamiIdx,"66666013",szParamLen) == 0 )
 		{
 			szParamContentiIdx  = temp[iIdx]+temp[iIdx+1]*256;   // 标签内容偏移地址
 			iIdx += 2;
@@ -9044,7 +9044,7 @@ uint8_t DealTmsParam(uint8_t *temp)
 			memset(stPosParam.szPOSRemoteIP2,0,sizeof(stPosParam.szPOSRemoteIP2));
 			memcpy(stPosParam.szPOSRemoteIP2,temp+szParamContentiIdx,szParamContentLen);
 		}
-		else if( memcmp(temp+szParamiIdx,"33333014",szParamLen) == 0 )
+		else if( memcmp(temp+szParamiIdx,"66666014",szParamLen) == 0 )
 		{
 			szParamContentiIdx  = temp[iIdx]+temp[iIdx+1]*256;   // 标签内容偏移地址
 			iIdx += 2;
@@ -9055,7 +9055,7 @@ uint8_t DealTmsParam(uint8_t *temp)
 			memset(stPosParam.szPOSRemotePort2,0,sizeof(stPosParam.szPOSRemotePort2));
 			memcpy(stPosParam.szPOSRemotePort2,temp+szParamContentiIdx,szParamContentLen);
 		}
-		else if( memcmp(temp+szParamiIdx,"33333015",szParamLen) == 0 )
+		else if( memcmp(temp+szParamiIdx,"66666015",szParamLen) == 0 )
 		{
 			szParamContentiIdx  = temp[iIdx]+temp[iIdx+1]*256;   // 标签内容偏移地址
 			iIdx += 2;

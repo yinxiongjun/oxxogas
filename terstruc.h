@@ -709,7 +709,7 @@ typedef struct _POS_COM_CONTROL
 	int szTopupAmount;
 	int TransFlag;
 	uint8_t  ErrorReason[200];
-	uint8_t  AutoUpdateFlag[2];       // 自动更新标志
+	uint8_t  AutoUpdateFlag[5];       // 自动更新标志
 }POS_COM_CONTROL;
 
 struct _POS_COM_CONTROL PosComconTrol;

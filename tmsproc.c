@@ -65,25 +65,41 @@ void time_add(int hour, int min, int sec, uint8_t *dest)    //以当前时间为基准加
 
 static int check_logon_auto(void)  //检查是否要自动签到
 {
-    uint8_t nowtime[8],tmp[8];
-    int ret;
-    
-    sysGetTime(nowtime);    //YYMMDDhhmmss
-//    if(memcmp(nowtime, tms_info.last_logon, 3)==0)  //YYMMDD相同
-//        return 0;
-    
-//    time_add(-24, 0, 0, tmp);   //24h
-    time_add(0, -1, 0, tmp);   //10 min xxxxxxxxxxxxxx test hlh
+	uint8_t nowtime[8],tmp[8],asctime[15],asctmp[15];
+	
+	int ret;
+
+	sysGetTime(nowtime);    //YYMMDDhhmmss
+/*
+	if(memcmp(nowtime, tms_info.last_logon, 2) >0)  //YYMMDD相同
+	{
+		memcpy(tms_info.last_logon,nowtime,6);
+	}
+
+	time_add(-24, 0, 0, tmp);   //24h
+	BcdToAsc0(asctime,  tms_info.last_logon, 12);
+	BcdToAsc0(asctmp,  nowtime+3, 2);
+
+	PrintDebug("%s %s", "tms_info.last_logon",asctime);
+	PrintDebug("%s %s", "nowtime",asctmp);
+*/	
+	//24时以后更新
+	if(nowtime[3] ==0x24)
+		ret = 1;
+	else
+		ret = 0;
+/*
+	time_add(0, -1, 0, tmp);   //10 min xxxxxxxxxxxxxx test hlh
 
 	if(memcmp(tmp, tms_info.last_logon, 6) < 0)
-        ret = 0;
-    	else
-        ret = 1;
-    
-    #ifdef ALIPAY_BUG
-    printf("check_logon_auto()=%d\n", ret);
-    #endif
-    return ret;
+		ret = 0;
+	else
+		ret = 1;
+*/
+#ifdef ALIPAY_BUG
+	printf("check_logon_auto()=%d\n", ret);
+#endif
+	return ret;
 }
 
 
@@ -129,7 +145,7 @@ int query_down_flag(void)
                 tms_info.task_flag = pAppUpdateType;
                 tms_info.down_falg = DOWN_FALG_READY;
                 strcpy(tms_info.ver_info, ver_info);
-				update_logon_time();
+		   update_logon_time();
                 req_cnt = 0;
                 return 1;
             }
@@ -192,7 +208,7 @@ int tms_process(int update_now)
 		    }
 		    tms_info.down_falg = DOWN_FALG_QUERY;
 		    save_tms_file(&tms_info);
-			update_logon_time();
+		    update_logon_time();
 		    ret = Start_Auto_Inspect_Now(&RetCode);     //巡检
 		    if(ret!=0 || RetCode!=Accept_Trans)
 		        return -1;

@@ -219,28 +219,28 @@ void ShowGetCardScreen(uint8_t ucMode,uint8_t *pDispBuf1,uint8_t *pDispBuf2)
 	    break;
 
 	case CARD_SWIPED|CARD_KEYIN:
-		sprintf((char *)szDispBuf, "Inserte / Deslice");
+		sprintf((char *)szDispBuf, "INSERTE/DESLICE");
 		sprintf((char *)szDispBuf2, "TARJETA");
 	    break;
 
 	case CARD_SWIPED|CARD_INSERTED:
 		if (PosCom.stTrans.iTransNo == EC_TOPUP_NORAML)
 		{
-			sprintf((char *)szDispBuf, "Inserte / Deslice");
+			sprintf((char *)szDispBuf, "INSERTE/DESLICE");
 			sprintf((char *)szDispBuf2, "TRANSFER CARD");			
 		}
 		else
 		{
-			sprintf((char *)szDispBuf, "Inserte / Deslice");
+			sprintf((char *)szDispBuf, "INSERTE/DESLICE");
 		}
 		break;
 
 	case CARD_INSERTED|CARD_KEYIN:
-		sprintf((char *)szDispBuf, "Inserte/Manual");
+		sprintf((char *)szDispBuf, "INSERTE/MANUAL");
 		break;
 
 	case CARD_INSERTED|CARD_KEYIN|CARD_SWIPED:
-		sprintf((char *)szDispBuf, "Inserte / Deslice");
+		sprintf((char *)szDispBuf, "INSERTE/DESLICE");
 		sprintf((char *)szDispBuf2, "TARJETA");
 		break;
 
@@ -249,16 +249,16 @@ void ShowGetCardScreen(uint8_t ucMode,uint8_t *pDispBuf1,uint8_t *pDispBuf2)
 		break;
 
 	case CARD_PASSIVE|CARD_INSERTED:
-		sprintf((char *)szDispBuf, "Insert Tarjeta");
+		sprintf((char *)szDispBuf, "INSERTE/DESLICE");
 		break;
 
 	case CARD_INSERTED|CARD_KEYIN|CARD_SWIPED|CARD_PASSIVE:
-		sprintf((char *)szDispBuf, "Inserte / Deslice");
+		sprintf((char *)szDispBuf, "INSERTE/DESLICE");
 		sprintf((char *)szDispBuf2, "TARJETA");
 		break;
 
 	case CARD_INSERTED|CARD_SWIPED|CARD_PASSIVE:
-		sprintf((char *)szDispBuf, "Inserte / Deslice");
+		sprintf((char *)szDispBuf, "INSERTE/DESLICE");
 		sprintf((char *)szDispBuf2, "TARJETA");
 		break;
 
@@ -288,7 +288,7 @@ void SaleGetCardScreen(uint8_t ucMode,uint8_t *pDispBuf1,uint8_t *pDispBuf2)
 		}
 		else
 		{
-			strcpy((char *)szDispBuf1,"      Inserte/Deslice      TARJETA");
+			strcpy((char *)szDispBuf1,"      INSERTE/DESLICE      TARJETA");
 		}
 	}
 	else
@@ -299,12 +299,12 @@ void SaleGetCardScreen(uint8_t ucMode,uint8_t *pDispBuf1,uint8_t *pDispBuf2)
 		strcpy((char *)szDispBuf1,(char *)szTmpBuff);
 		if (ucMode==CARD_SWIPED)
 		{
-			strcpy((char *)szDispBuf2,"Inserte/Deslice         TARJETA");
+			strcpy((char *)szDispBuf2,"INSERTE/DESLICE         TARJETA");
 			memset(szDispBuf1,0,sizeof(szDispBuf1));
 		}
 		else
 		{
-			strcpy((char *)szDispBuf2,"   Inserte/Deslice      TARJETA");
+			strcpy((char *)szDispBuf2,"   INSERTE/DESLICE      TARJETA");
 			memset(szDispBuf1,0,sizeof(szDispBuf1));
 		}
 	}
@@ -1046,7 +1046,6 @@ uint8_t PosGetCard(uint8_t ucMode)
 				{
 					//余额查询直接退出
 					PrintDebug("%s%d%d", "stTemp.iTransNo:",stTemp.iTransNo,PURSE_GETBALANCE);
-
 					if(stTemp.iTransNo==PURSE_GETBALANCE ||stTemp.iTransNo ==PURSE_GETRULE)
 					{
 						return OK;

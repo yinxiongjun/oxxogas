@@ -578,7 +578,7 @@ uint8_t AppGetCtlvalue(uint8_t flag)
 			lcdCls();
 			lcdSetFont("/usr/share/fonts/wqy-microhei.ttf", "GBK", 0, 20, 0);
 			DispMulLanguageString(0, 0, DISP_HFONT16|DISP_MEDIACY|DISP_INVLINE, NULL, (char*)"VENTA");
-			DispMulLanguageString(0, 4, DISP_CFONT|DISP_MEDIACY, NULL, "Intrese Placas:");
+			DispMulLanguageString(0, 4, DISP_CFONT|DISP_MEDIACY, NULL, "Ingrese Placas:");
 			lcdFlip();
 			lcdSetFont("/usr/share/fonts/wqy-microhei.ttf", "GBK", 0, 30, 0);
 			lcdGoto(120, 5);
@@ -647,7 +647,7 @@ uint8_t AppGetCtlvalue(uint8_t flag)
 			lcdCls();
 			lcdSetFont("/usr/share/fonts/wqy-microhei.ttf", "GBK", 0, 20, 0);
 			DispMulLanguageString(0, 0, DISP_HFONT16|DISP_MEDIACY|DISP_INVLINE, NULL, (char*)"VENTA");
-			DispMulLanguageString(0, 4, DISP_CFONT|DISP_MEDIACY, NULL, "Intrese Placas:");
+			DispMulLanguageString(0, 4, DISP_CFONT|DISP_MEDIACY, NULL, "Ingrese Placas:");
 			lcdFlip();
 			lcdSetFont("/usr/share/fonts/wqy-microhei.ttf", "GBK", 0, 30, 0);
 			lcdGoto(120, 5);
@@ -1112,12 +1112,15 @@ RE_INSERT:
 			sprintf((char *)szSignTime, "%.4s", szTime);
 		}
 		//暂时不用，需要的时候再用 (63域 返回 ZY00001 1! 1检测更新，0 不检测更新)
+		//PrintDebug("%s:%s", "update_flag",PosComconTrol.AutoUpdateFlag);
 		if( atoi((char*)PosComconTrol.AutoUpdateFlag) == 1 )
 		{
 			if(sysGetTimerCount()-iOldTime > 5000)  //5s
 			{
 				iOldTime = sysGetTimerCount();
 				ucRet = DealTmsFunc(0);
+				//每收到一次自动更新标志，只向tms后台请求更新一次
+		    		//memset(PosComconTrol.AutoUpdateFlag,0,sizeof(PosComconTrol.AutoUpdateFlag));
 				if(ucRet==E_APP_EXIT || ucRet==E_APP_RESET)
 				{
 					return ucRet;
@@ -1464,7 +1467,7 @@ int SelectTrans(void)
 	{
 		" MENU PRINCIPAL",
 		"1-Venta",
-		"2-Settle ",
+		"2-Cierre ",
 		"3-Reportes ",
 		"4-Config ",
 		"5-Prueba Comm ",
@@ -1930,30 +1933,10 @@ uint8_t SelectPrintFunc(void)
 	};*/
 
 	InitMenu(MENU_MODE_1, "SELECCIONE REPORTE");
-	if( stPosParam.Switch_Hotel == PARAM_OPEN )
-	{
-		MesesAddMenuItem(PARAM_OPEN,           			PRT_TOTAL,		"Reporte de totales             ",         NULL);
-		MesesAddMenuItem(PARAM_OPEN,   					PRT_DETAIL,     "Reporte de detalles        ",         NULL);
-		MesesAddMenuItem(stPosParam.CheckInFlag,   		PRT_CHECK_IN,  "Reporte Check in         ",         NULL);
-		MesesAddMenuItem(stPosParam.CheckOutFlag,   		PRT_CHECK_OUT,  "Reporte Check out            ",         NULL);
-		MesesAddMenuItem(PARAM_OPEN,           			PRT_ANY,		"Reimpresion            ",         NULL);
-		MesesAddMenuItem(stPosParam.CheckInFlag,   		PRT_ANY_CHECK_IN,  "Reimpresion Check in           ",         NULL);
-		MesesAddMenuItem(stPosParam.CheckOutFlag,        PRT_ANY_CHECK_OUT,		"Reimpresion Check out            ",         NULL);
 
-	}
-	else if( stPosParam.Switch_Retail == PARAM_OPEN )
-	{
-		MesesAddMenuItem(PARAM_OPEN,   PRT_TOTAL,	"REPORT DE TOTALES             ",         NULL);
-		MesesAddMenuItem(PARAM_OPEN,   PRT_DETAIL,  "REPORT DE DETALLES        ",         NULL);
-		MesesAddMenuItem(PARAM_OPEN,   PRT_ANY,  	"REIMPRESION         ",         NULL);
-	}
-	else 
-	{
-		MesesAddMenuItem(PARAM_OPEN,   PRT_TOTAL,		"Reporte de totales             ",         NULL);
-		MesesAddMenuItem(PARAM_OPEN,   PRT_DETAIL,      "Reporte de detalles        ",         NULL);
-		MesesAddMenuItem(PARAM_OPEN,   PRT_ANY,  		"Reimpresion         ",         NULL);
-		MesesAddMenuItem(PARAM_OPEN,   PRT_TIP,  		"Reimpresion            ",         NULL);
-	}
+	MesesAddMenuItem(PARAM_OPEN,   PRT_TOTAL,	"REPORT DE TOTALES             ",         NULL);
+	MesesAddMenuItem(PARAM_OPEN,   PRT_DETAIL,  "REPORT DE DETALLES        ",         NULL);
+	MesesAddMenuItem(PARAM_OPEN,   PRT_ANY,  	"REIMPRESION         ",         NULL);
 
 	iRet = DispDynamicMenu(1);
 	if( iRet == 255 )		//NO_TRANS

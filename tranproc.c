@@ -258,7 +258,6 @@ uint8_t ComfirAmount(uint8_t *szTransAmount)
 		return NO_DISP;
 	}
 
-
 	if( stTemp.iTransNo==NETPAY_FORZADA )
 	{
 		sprintf(szTitle,"VENTA FORZADA");
@@ -1474,6 +1473,12 @@ uint8_t PosSettleTran(void)
 
 	stPosParam.SettleSign = FALSE; // 结算标志置为false
 
+	ucRet = CheckParamPass();
+	if( ucRet!=1 )
+	{
+		return NO_DISP;
+	}
+	
 	kbFlush();
 	lcdCls(); 	
 	if( fileExist(REVERSAL_FILE)>=0 )
@@ -3541,22 +3546,17 @@ uint8_t SaleTranGetData(void)
 		{
 			case PURSE_SODEXO:
 				sprintf(TitelName,"   %s   ","VENTA  SODEXO");
-				//DispMulLanguageString(0, 0, DISP_CFONT|DISP_MEDIACY|DISP_INVLINE, NULL, "     VENTA  SODEXO   ");
 				break;
 			case PURSE_PUNTO:
 				sprintf(TitelName,"   %s   ","VENTA  PUNTO");
-				//DispMulLanguageString(0, 0, DISP_CFONT|DISP_MEDIACY|DISP_INVLINE, NULL, "     VENTA  PUNTO   ");	
 				break;
 			case PURSE_TODITO:
 				sprintf(TitelName,"   %s   ","VENTA  TODITO");
-				//DispMulLanguageString(0, 0, DISP_CFONT|DISP_MEDIACY|DISP_INVLINE, NULL, "     VENTA  TODITO   ");
 				break;
 			case PURSE_EDENRED:
 				sprintf(TitelName,"   %s   ","VENTA  EDENRED");
-				//DispMulLanguageString(0, 0, DISP_CFONT|DISP_MEDIACY|DISP_INVLINE, NULL, "     VENTA  EDENRED   ");
 				break;
 			default:
-				//DispMulLanguageString(0, 0, DISP_CFONT|DISP_MEDIACY|DISP_INVLINE, NULL, "     VENTA   ");
 				sprintf(TitelName,"   %s   ","VENTA");
 				break;
 		}		
@@ -3566,7 +3566,6 @@ uint8_t SaleTranGetData(void)
 	{
 		sprintf(TitelName,"   %s   ","VENTA");
 		DispMulLanguageString(0, 0, DISP_CFONT|DISP_MEDIACY|DISP_INVLINE, NULL,TitelName );
-		//DispMulLanguageString(0, 0, DISP_CFONT|DISP_MEDIACY|DISP_INVLINE, NULL, "     VENTA     ");
 	}
 
 	if (PosCom.ucPBOCFlag==1)
@@ -4801,13 +4800,15 @@ uint8_t Electronic_wallet_online_Auth(void)
 	switch(PosCom.ucSwipedFlag)
 	{
 		case CARD_SWIPED:
-			memcpy(PosCom.stTrans.szEntryMode, "021", 3);
+			//memcpy(PosCom.stTrans.szEntryMode, "021", 3);
+			memcpy(PosCom.stTrans.szEntryMode, "520", 3);
 			sprintf((char *)glSendPack.szEntryMode, "%s0",  PosCom.stTrans.szEntryMode);
 			sprintf((char *)glSendPack.szTrack2, "%.*s", LEN_TRACK2, PosCom.szTrack2);
 			//sprintf((char *)glSendPack.szField45, "%.*s", strlen((char*)PosCom.szTrack1), PosCom.szTrack1);
 			break;
 		case CARD_INSERTED:
-			memcpy(PosCom.stTrans.szEntryMode, "050", 3);
+			//memcpy(PosCom.stTrans.szEntryMode, "050", 3);
+			memcpy(PosCom.stTrans.szEntryMode, "550", 3);
 			sprintf((char *)glSendPack.szEntryMode, "%s0",  PosCom.stTrans.szEntryMode);
 
 			if(PosCom.stTrans.CardType==7)
@@ -4984,7 +4985,8 @@ uint8_t Electronic_wallet_online_PreAuth(void)
 	switch(PosCom.ucSwipedFlag)
 	{
 		case CARD_SWIPED:
-			memcpy(PosCom.stTrans.szEntryMode, "021", 3);
+			//memcpy(PosCom.stTrans.szEntryMode, "021", 3);
+			memcpy(PosCom.stTrans.szEntryMode, "520", 3);
 			sprintf((char *)glSendPack.szEntryMode, "%s0",  PosCom.stTrans.szEntryMode);
 			if(PosCom.stTrans.CardType==7)
 			{
@@ -4993,7 +4995,8 @@ uint8_t Electronic_wallet_online_PreAuth(void)
 			//sprintf((char *)glSendPack.szField45, "%.*s", strlen((char*)PosCom.szTrack1), PosCom.szTrack1);
 			break;
 		case CARD_INSERTED:
-			memcpy(PosCom.stTrans.szEntryMode, "050", 3);
+			//memcpy(PosCom.stTrans.szEntryMode, "050", 3);
+			memcpy(PosCom.stTrans.szEntryMode, "550", 3);
 			sprintf((char *)glSendPack.szEntryMode, "%s0",  PosCom.stTrans.szEntryMode);
 
 			if(PosCom.stTrans.CardType==7)
@@ -5117,7 +5120,7 @@ uint8_t Electronic_wallet_online(void)
 		}
 
 		lcdCls();
-		lcdDisplay(0, 2, DISP_CFONT, "CONFIRMACION");
+		lcdDisplay(0, 2, DISP_HFONT16, "CONFIRMACION");
 		lcdDisplay(0, 4, DISP_CFONT, "REALIZAR LA VENTA?");		
 		lcdDisplay(210, 8, DISP_HFONT16 ,"1-SI");
 		lcdDisplay(210, 9, DISP_HFONT16, "2-NO");//DISP_HFONT16
@@ -5136,15 +5139,15 @@ uint8_t Electronic_wallet_online(void)
 		BcdToAsc(sTempBuff, PosCom.stTrans.sAmount, 12);
 		sAmount= atol((char *)sTempBuff);
 		lcdCls();
-		lcdDisplay(0, 2, DISP_CFONT, "CONFIRMACION");
+		lcdDisplay(0, 2, DISP_HFONT16, "CONFIRMACION");
 
 		if(PosCom.stTrans.saletype[0] == '1')
 		{
-			lcdDisplay(0, 4, DISP_CFONT, "IMPORTE %ld.%02ld ",(sAmount)/100,(sAmount)%100);
+			lcdDisplay(0, 4, DISP_CFONT, "IMPORTE: %ld.%02ld ",(sAmount)/100,(sAmount)%100);
 		}
 		else if(PosCom.stTrans.saletype[0] == '2')
 		{
-			lcdDisplay(0, 4, DISP_CFONT, "LITROS %ld.%02ld ",(sAmount)/100,(sAmount)%100);
+			lcdDisplay(0, 4, DISP_CFONT, "LITROS: %ld.%02ld ",(sAmount)/100,(sAmount)%100);
 		}
 		lcdDisplay(210, 8, DISP_HFONT16 ,"1-SI");//DISP_CFONT
 		lcdDisplay(210, 9, DISP_HFONT16, "2-NO");
@@ -5229,13 +5232,15 @@ uint8_t OnlineSale(void)
 	switch(PosCom.ucSwipedFlag)
 	{
 		case CARD_SWIPED:
-			memcpy(PosCom.stTrans.szEntryMode, "021", 3);
+			//memcpy(PosCom.stTrans.szEntryMode, "021", 3);
+			memcpy(PosCom.stTrans.szEntryMode, "520", 3);
 			sprintf((char *)glSendPack.szEntryMode, "%s0",  PosCom.stTrans.szEntryMode);
 			sprintf((char *)glSendPack.szTrack2, "%.*s", LEN_TRACK2, PosCom.szTrack2);
 			sprintf((char *)glSendPack.szField45, "%.*s", strlen((char*)PosCom.szTrack1), PosCom.szTrack1);
 			break;
 		case CARD_INSERTED:
-			memcpy(PosCom.stTrans.szEntryMode, "050", 3);
+			//memcpy(PosCom.stTrans.szEntryMode, "050", 3);
+			memcpy(PosCom.stTrans.szEntryMode, "550", 3);
 			sprintf((char *)glSendPack.szEntryMode, "%s0",  PosCom.stTrans.szEntryMode);
 			sprintf((char *)glSendPack.szTrack2, "%.*s", LEN_TRACK2, PosCom.szTrack2);
 		case CARD_KEYIN:
@@ -7311,7 +7316,11 @@ uint8_t AfterCommProc(void)
 	{
 		return OK;
 	}
+	//test autoupdate
+	//PosComconTrol.AutoUpdateFlag[0] = '1';
+	//PosComconTrol.AutoUpdateFlag[1] = '\0';
 
+	PrintDebug("%s %s", "AutoUpdateFlag",PosComconTrol.AutoUpdateFlag);
 	if (ChkAcceptTxnCode((char*)PosCom.szRespCode))
 	{
 		if(PURSE_GETBALANCE== stTemp.iTransNo)
@@ -9634,7 +9643,6 @@ uint8_t GetAmount_FromGasPlat()
 	sprintf((char *)sTempBuff,"%s","172839");
 	sprintf((char*)glSendPack.sField62+2,"%s",sTempBuff);
 
-{
 	memset(sTempBuff,0,sizeof(sTempBuff));
 	sysReadSN(stPosParam.szSN);
 
@@ -9652,7 +9660,7 @@ uint8_t GetAmount_FromGasPlat()
 	szParaLen += strlen(szSNTemp);
 
 	strcpy(stPosParam.szLG,"123456");
-	sprintf(szLGTemp,"LG%05d%s",strlen(stPosParam.szLG),stPosParam.szLG);
+	sprintf(szLGTemp,"LG%05d%s!",strlen(stPosParam.szLG),stPosParam.szLG);
 	szParaNum++;
 	szParaLen += strlen(szLGTemp);
 
@@ -9708,9 +9716,6 @@ uint8_t GetAmount_FromGasPlat()
 	sprintf((char*)szField63BuffTemp,"%s%s%s%s%s%s%s%s%s",szTotalLenTemp,szSTTemp,szDM,szSNTemp,szLGTemp,szV1temp,szCBtemp,szCNtemp,szC1temp);
 	memset(glSendPack.szField63,0,sizeof(glSendPack.szField63));
 	strcpy((char *)glSendPack.szField63,szField63BuffTemp);
-}
-	
-	//NetpayDealFeild63((uint8_t *)szField63BuffTemp);
 
 	memset(glSendPack.sMacData,0,sizeof(glSendPack.sMacData));
 
@@ -9851,7 +9856,8 @@ uint8_t GetBalance_FromBankPlat(int flag)
 	switch(PosCom.ucSwipedFlag)
 	{
 		case CARD_SWIPED:
-			memcpy(PosCom.stTrans.szEntryMode, "021", 3);
+			//memcpy(PosCom.stTrans.szEntryMode, "021", 3);
+			memcpy(PosCom.stTrans.szEntryMode, "520", 3);
 			sprintf((char *)glSendPack.szEntryMode, "%s0",  PosCom.stTrans.szEntryMode);
 			if(flag != PURSE_GETRULE)
 			{
@@ -9859,8 +9865,8 @@ uint8_t GetBalance_FromBankPlat(int flag)
 			}
 			break;
 		case CARD_INSERTED:
-			memcpy(PosCom.stTrans.szEntryMode, "050", 3);
-			//if(PosCom.stTrans.CardType ==7)
+			//memcpy(PosCom.stTrans.szEntryMode, "050", 3);
+			memcpy(PosCom.stTrans.szEntryMode, "550", 3);
 			PrintDebug("%s%d", "glSendPack.szTrack2:",PosCom.stTrans.CardType);
 
 			if(flag ==PURSE_GETRULE)
@@ -10064,7 +10070,7 @@ uint8_t GetBalance_FromBankPlat(int flag)
 			lcdCls();
 			lcdSetFont("/usr/share/fonts/wqy-microhei.ttf", "GBK", 0, 20, 0);
 			DispMulLanguageString(0, 0, DISP_HFONT16|DISP_MEDIACY|DISP_INVLINE, NULL, (char*)"VENTA");
-			DispMulLanguageString(0, 4, DISP_HFONT16|DISP_MEDIACY, NULL, "Intrese Placas:");
+			DispMulLanguageString(0, 4, DISP_HFONT16|DISP_MEDIACY, NULL, "Ingrese Placas:");
 			lcdFlip();
 			lcdSetFont("/usr/share/fonts/wqy-microhei.ttf", "GBK", 0, 30, 0);
 			lcdGoto(120, 5);
@@ -10211,7 +10217,7 @@ uint8_t GetBalance_FromBankPlat(int flag)
 		//DISP_CFONT|DISP_MEDIACY|DISP_INVLINE
 		lcdCls();
 		lcdDisplay(0, 2, DISP_HFONT16, "CONFIRMACION");
-		lcdDisplay(0, 4, DISP_HFONT16, "REALIZAR LA VENTA?");		
+		lcdDisplay(0, 4, DISP_CFONT, "REALIZAR LA VENTA?");		
 		lcdDisplay(210, 8, DISP_HFONT16 ,"1-SI");
 		lcdDisplay(210, 9, DISP_HFONT16, "2-NO");
 		lcdFlip();
@@ -10230,11 +10236,11 @@ uint8_t GetBalance_FromBankPlat(int flag)
 	
 		if(PosCom.stTrans.saletype[0] == '1')
 		{
-			lcdDisplay(0, 4, DISP_HFONT16, "IMPORTE %ld.%02ld ",(szcount)/100,(szcount)%100);
+			lcdDisplay(0, 4, DISP_CFONT, "IMPORTE: %ld.%02ld ",(szcount)/100,(szcount)%100);
 		}
 		else if(PosCom.stTrans.saletype[0] == '2')
 		{
-			lcdDisplay(0, 4, DISP_HFONT16, "LITROS %ld.%02ld ",(szcount)/100,(szcount)%100);
+			lcdDisplay(0, 4, DISP_CFONT, "LITROS: %ld.%02ld ",(szcount)/100,(szcount)%100);
 		}
 		lcdDisplay(210, 8, DISP_HFONT16 ,"1-SI");
 		lcdDisplay(210, 9, DISP_HFONT16, "2-NO");
@@ -10304,12 +10310,13 @@ uint8_t GetRules_FromBankPlat(int flag)
 	switch(PosCom.ucSwipedFlag)
 	{
 		case CARD_SWIPED:
-			memcpy(PosCom.stTrans.szEntryMode, "021", 3);
+			//memcpy(PosCom.stTrans.szEntryMode, "021", 3);
+			memcpy(PosCom.stTrans.szEntryMode, "520", 3);
 			sprintf((char *)glSendPack.szEntryMode, "%s0",  PosCom.stTrans.szEntryMode);
 			break;
 		case CARD_INSERTED:
-			memcpy(PosCom.stTrans.szEntryMode, "050", 3);
-
+			//memcpy(PosCom.stTrans.szEntryMode, "050", 3);
+			memcpy(PosCom.stTrans.szEntryMode, "550", 3);
 		case CARD_KEYIN:
 		default:
 			break;

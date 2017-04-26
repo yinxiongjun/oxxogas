@@ -21,29 +21,6 @@ void SetupPosPara(void)
 {
 	int iKey;
 
-/*	const char *setupMenu[] =
-	{
-		"CONFIGURACION",
-		"1.MERCHANT PARAM",
-		"2.TRANS PARAM",
-		"3.SYSTEM PARAM",
-		"4.COMMU PARAM",
-		"5.Salir",
-		"6.PASSWORD",
-		"7.OTHERS PARAM",
-	};
-	const char *setupMenu[] =
-	{
-		"CONFIGURACION",
-		"1.Parametros del comercio",
-		"2.Parametros de la transaccion",
-		"3.Parametros del sistema",
-		"4.Parametros de conexion",
-		"5.Salir",
-		"6.Contrasena",
-		"7.Otros parametros",
-	};
-*/
 	const char *setupMenu[] =
 	{
 		"CONFIGURACION",
@@ -55,7 +32,6 @@ void SetupPosPara(void)
 
 	while(1)
 	{
-		//iKey = DispMenu(setupMenu, 5, 1, KEY1, KEY4, stPosParam.ucOprtLimitTime);
 		iKey = DispMenu2(setupMenu, 5, 1,KEY1, KEY4,stPosParam.ucOprtLimitTime);
 		switch(iKey)
 		{
@@ -63,17 +39,14 @@ void SetupPosPara(void)
 			SetupTerminalPara();
 			break;
 		case KEY2:
-			SetupAppSwitch();
+			//SetupAppSwitch();
 			SetupSysPara();
 			break;
 		case KEY3:
 			SetCommParam(TRANS_COMMTYPE);
 			break;
 		case KEY4:
-			SetLogonOff();
-//			SetSupportPinpad();
-//			SetMasterKeys();
-			
+			SetLogonOff();			
 			break;
 		case KEY5:
 			ChangePwdFunc();
@@ -430,14 +403,7 @@ void SetupTerminalPara(void)
 				strcpy((char *)stPosParam.szUnitNum, (char *)buf);
 				strcpy((char *)stTransCtrl.szNowTellerNo, TELLER_NOBODY);
 				stTransCtrl.ucLogonFlag=LOGGEDOFF;
-/*				stTransCtrl.bEmvAppLoaded = FALSE;
-				stTransCtrl.bEmvCapkLoaded=FALSE;
-				emv_delete_all_terminal_aids();
-				emv_delete_all_ca_public_keys();
-				fileRemove("emv.aid");
-				fileRemove(TERM_AIDLIST);
-				fileRemove("emv.capk");
-*/			}
+			}
 		}
 	}
 
@@ -716,7 +682,6 @@ void SetupSysPara(void)
 		stPosParam.lNowTraceNo = lTmpLong;
 	}
 
-
 	//ÈÝÁ¿¿ØÖÆ
 	{
 		lcdClrLine(2,7);
@@ -765,7 +730,157 @@ void SetupSysPara(void)
 			return ;
 		}
 	}
+	//stSodexoTId
+	kbFlush();
+	lcdCls();
+	DispMulLanguageString(0, 0, DISP_CFONT|DISP_INVLINE|DISP_MEDIACY, NULL, "Paras del comercio");
+	DispMulLanguageString(0, 2, DISP_CFONT, NULL, "PLS INPUT SodexoTId");
+	strcpy((char *)buf, (char *)stPosParam.stSodexoTId);
+	lcdDisplay(8, 4, DISP_CFONT, (char*)buf);
+	iRet = PubGetString(ALPHA_IN,8, 8,buf,stPosParam.ucOprtLimitTime,1);
+	if(strlen((char*)buf)>0 && strcmp((char *)stPosParam.stSodexoTId, (char *)buf))
+	{
+		strcpy((char *)stPosParam.stSodexoTId, (char *)buf);	
+	}
+	//stPCSerial
+	kbFlush();
+	lcdCls();
+	DispMulLanguageString(0, 0, DISP_CFONT|DISP_INVLINE|DISP_MEDIACY, NULL, "Paras del comercio");
+	DispMulLanguageString(0, 2, DISP_CFONT, NULL, "PLS INPUT PCSerial");
+	strcpy((char *)buf, (char *)stPosParam.stPCSerial);
+	lcdDisplay(8, 4, DISP_CFONT, (char*)buf);
+	iRet = PubGetString(ALPHA_IN,11, 11,buf,stPosParam.ucOprtLimitTime,1);
+	if(strlen((char*)buf)>0 && strcmp((char *)stPosParam.stPCSerial, (char *)buf))
+	{
+		strcpy((char *)stPosParam.stPCSerial, (char *)buf);	
+	}
+	//stPCPid
+	kbFlush();
+	lcdCls();
+	DispMulLanguageString(0, 0, DISP_CFONT|DISP_INVLINE|DISP_MEDIACY, NULL, "Paras del comercio");
+	DispMulLanguageString(0, 2, DISP_CFONT, NULL, "PLS INPUT PCPid");
+	strcpy((char *)buf, (char *)stPosParam.stPCPid);
+	lcdDisplay(8, 4, DISP_CFONT, (char*)buf);
+	iRet = PubGetString(ALPHA_IN,8, 8,buf,stPosParam.ucOprtLimitTime,1);
+	if(strlen((char*)buf)>0 && strcmp((char *)stPosParam.stPCPid, (char *)buf))
+	{
+		strcpy((char *)stPosParam.stPCPid, (char *)buf);	
+	}
+	//stPCpass
+	kbFlush();
+	lcdCls();
+	DispMulLanguageString(0, 0, DISP_CFONT|DISP_INVLINE|DISP_MEDIACY, NULL, "Paras del comercio");
+	DispMulLanguageString(0, 2, DISP_CFONT, NULL, "PLS INPUT PCpass");
+	strcpy((char *)buf, (char *)stPosParam.stPCpass);
+	lcdDisplay(8, 4, DISP_CFONT, (char*)buf);
+	iRet = PubGetString(ALPHA_IN,4, 4,buf,stPosParam.ucOprtLimitTime,1);
+	if(strlen((char*)buf)>0 && strcmp((char *)stPosParam.stPCpass, (char *)buf))
+	{
+		strcpy((char *)stPosParam.stPCpass, (char *)buf);	
+	}
+	//stETId
+	kbFlush();
+	lcdCls();
+	DispMulLanguageString(0, 0, DISP_CFONT|DISP_INVLINE|DISP_MEDIACY, NULL, "Paras del comercio");
+	DispMulLanguageString(0, 2, DISP_CFONT, NULL, "PLS INPUT ETId");
+	strcpy((char *)buf, (char *)stPosParam.stETId);
+	lcdDisplay(8, 4, DISP_CFONT, (char*)buf);
+	iRet = PubGetString(ALPHA_IN,5, 5,buf,stPosParam.ucOprtLimitTime,1);
+	if(strlen((char*)buf)>0 && strcmp((char *)stPosParam.stETId, (char *)buf))
+	{
+		strcpy((char *)stPosParam.stETId, (char *)buf);	
+	}
+
+	//stETerm
+	kbFlush();
+	lcdCls();
+	DispMulLanguageString(0, 0, DISP_CFONT|DISP_INVLINE|DISP_MEDIACY, NULL, "Paras del comercio");
+	DispMulLanguageString(0, 2, DISP_CFONT, NULL, "PLS INPUT ETerm");
+	strcpy((char *)buf, (char *)stPosParam.stETerm);
+	lcdDisplay(8, 4, DISP_CFONT, (char*)buf);
+	iRet = PubGetString(ALPHA_IN,5, 5,buf,stPosParam.ucOprtLimitTime,1);
+	if(strlen((char*)buf)>0 && strcmp((char *)stPosParam.stETerm, (char *)buf))
+	{
+		strcpy((char *)stPosParam.stETerm, (char *)buf);	
+	}
+
+	//stHeader1
+	kbFlush();
+	lcdCls();
+	DispMulLanguageString(0, 0, DISP_CFONT|DISP_INVLINE|DISP_MEDIACY, NULL, "Paras del comercio");
+	DispMulLanguageString(0, 2, DISP_CFONT, NULL, "PLS INPUT Header1");
+	strcpy((char *)buf, (char *)stPosParam.stHeader1);
+	lcdDisplay(8, 4, DISP_CFONT, (char*)buf);
+	iRet = PubGetString(ALPHA_IN,50, 50,buf,stPosParam.ucOprtLimitTime,1);
+	if(strlen((char*)buf)>0 && strcmp((char *)stPosParam.stHeader1, (char *)buf))
+	{
+		strcpy((char *)stPosParam.stHeader1, (char *)buf);	
+	}
+	//stAddress1
+	kbFlush();
+	lcdCls();
+	DispMulLanguageString(0, 0, DISP_CFONT|DISP_INVLINE|DISP_MEDIACY, NULL, "Paras del comercio");
+	DispMulLanguageString(0, 2, DISP_CFONT, NULL, "PLS INPUT Address1");
+	strcpy((char *)buf, (char *)stPosParam.stAddress1);
+	lcdDisplay(8, 4, DISP_CFONT, (char*)buf);
+	iRet = PubGetString(ALPHA_IN,50, 50,buf,stPosParam.ucOprtLimitTime,1);
+	if(strlen((char*)buf)>0 && strcmp((char *)stPosParam.stAddress1, (char *)buf))
+	{
+		strcpy((char *)stPosParam.stAddress1, (char *)buf);	
+	}
+	//stAddress2
+	kbFlush();
+	lcdCls();
+	DispMulLanguageString(0, 0, DISP_CFONT|DISP_INVLINE|DISP_MEDIACY, NULL, "Paras del comercio");
+	DispMulLanguageString(0, 2, DISP_CFONT, NULL, "PLS INPUT Address2");
+	strcpy((char *)buf, (char *)stPosParam.stAddress2);
+	lcdDisplay(8, 4, DISP_CFONT, (char*)buf);
+	iRet = PubGetString(ALPHA_IN,50, 50,buf,stPosParam.ucOprtLimitTime,1);
+	if(strlen((char*)buf)>0 && strcmp((char *)stPosParam.stAddress2, (char *)buf))
+	{
+		strcpy((char *)stPosParam.stAddress2, (char *)buf);	
+	}
+
+	//stAddress3
+	kbFlush();
+	lcdCls();
+	DispMulLanguageString(0, 0, DISP_CFONT|DISP_INVLINE|DISP_MEDIACY, NULL, "Paras del comercio");
+	DispMulLanguageString(0, 2, DISP_CFONT, NULL, "PLS INPUT Address3");
+	strcpy((char *)buf, (char *)stPosParam.stAddress3);
+	lcdDisplay(8, 4, DISP_CFONT, (char*)buf);
+	iRet = PubGetString(ALPHA_IN,50, 50,buf,stPosParam.ucOprtLimitTime,1);
+	if(strlen((char*)buf)>0 && strcmp((char *)stPosParam.stAddress3, (char *)buf))
+	{
+		strcpy((char *)stPosParam.stAddress3, (char *)buf);	
+	}
+
+	//stAffId
+	kbFlush();
+	lcdCls();
+	DispMulLanguageString(0, 0, DISP_CFONT|DISP_INVLINE|DISP_MEDIACY, NULL, "Paras del comercio");
+	DispMulLanguageString(0, 2, DISP_CFONT, NULL, "PLS INPUT AffId");
+	strcpy((char *)buf, (char *)stPosParam.stAffId);
+	lcdDisplay(8, 4, DISP_CFONT, (char*)buf);
+	iRet = PubGetString(ALPHA_IN,7, 7,buf,stPosParam.ucOprtLimitTime,1);
+	if(strlen((char*)buf)>0 && strcmp((char *)stPosParam.stAffId, (char *)buf))
+	{
+		strcpy((char *)stPosParam.stAffId, (char *)buf);	
+	}
+
+	//stTerminalId
+	kbFlush();
+	lcdCls();
+	DispMulLanguageString(0, 0, DISP_CFONT|DISP_INVLINE|DISP_MEDIACY, NULL, "Paras del comercio");
+	DispMulLanguageString(0, 2, DISP_CFONT, NULL, "PLS INPUT TerminalId");
+	strcpy((char *)buf, (char *)stPosParam.stTerminalId);
+	lcdDisplay(8, 4, DISP_CFONT, (char*)buf);
+	iRet = PubGetString(ALPHA_IN,15, 15,buf,stPosParam.ucOprtLimitTime,1);
+	if(strlen((char*)buf)>0 && strcmp((char *)stPosParam.stTerminalId, (char *)buf))
+	{
+		strcpy((char *)stPosParam.stTerminalId, (char *)buf);	
+	}
 	
+	/*******************/
 	lcdClrLine(2,7);
 	DispMulLanguageString(0, 2, DISP_CFONT, NULL, "NUMERO DE LOTE:");
 	sprintf((char *)buf, "%06d", stPosParam.lNowBatchNum);

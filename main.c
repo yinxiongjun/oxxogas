@@ -813,8 +813,11 @@ void DispResult(uint8_t rej)
 
 void InitAllTransData(void)
 {
+	char tmp[5] ={0};
 	memset(&stTemp, 0, sizeof(stTemp));
+	memcpy(tmp,PosComconTrol.AutoUpdateFlag,5);
 	memset(&PosComconTrol,0,sizeof(PosComconTrol));
+	memcpy(PosComconTrol.AutoUpdateFlag,tmp,5);
 
 	stTemp.iTransNo   = NO_TRANS_SELECT;
 	stTemp.bSendId    = TRUE;
@@ -1680,7 +1683,7 @@ int  DispVenta(void)
 			stTemp.iTransNo = POS_SALE;
 			break;
 		case KEY2:		
-			InitMenu(MENU_MODE_1, " VENTA MONEDORO");
+			InitMenu(MENU_MODE_1, " VENTA MONEDERO");
 	
 			MainMenuAddMenuItem(PARAM_OPEN,   PURSE_SODEXO,   "SODEXO            ",         NULL);
 			MainMenuAddMenuItem(PARAM_OPEN,   PURSE_PUNTO,     "PUNTO CLAVE        ",         NULL);
@@ -2132,7 +2135,7 @@ void GetPosCapablity(void)
 #ifdef _POS_TYPE_8110
 	if (gstPosCapability.uiPosType == 1) //8110
 	{
-		strcpy(gstPosVersion.szVersion,"OXG17");
+		strcpy(gstPosVersion.szVersion,"OXG19");
 		strcpy(gstPosVersion.szCertificate,"123136");
 	}
 	else if (gstPosCapability.uiPosType == 2) //6110
@@ -2146,25 +2149,25 @@ void GetPosCapablity(void)
 
 	if (gstPosCapability.uiPosType == 1) // 8110P/8110PS
 	{
-		strcpy(gstPosVersion.szVersion,"OXG17");
+		strcpy(gstPosVersion.szVersion,"OXG19");
 		strcpy(gstPosVersion.szCertificate,"123136");
 		gstPosCapability.uiPortType = PORT_COM1;
 	}
 	else if (gstPosCapability.uiPosType == 4)	//6210
 	{
-		strcpy(gstPosVersion.szVersion,"OXG17");
+		strcpy(gstPosVersion.szVersion,"OXG19");
 		strcpy(gstPosVersion.szCertificate,"123221");
 		gstPosCapability.uiPortType = PORT_XX;
 	}
 	else if (gstPosCapability.uiPosType == 5)	//7210
 	{
-		strcpy(gstPosVersion.szVersion,"OXG17");
+		strcpy(gstPosVersion.szVersion,"OXG19");
 		strcpy(gstPosVersion.szCertificate,"123226");
 		gstPosCapability.uiPortType = PORT_XX;
 	}
 	else  //8210
 	{
-		strcpy(gstPosVersion.szVersion,"OXG17");
+		strcpy(gstPosVersion.szVersion,"OXG19");
 		strcpy(gstPosVersion.szCertificate,"123209");
 		gstPosCapability.uiPortType = PORT_COM1;
 	}
