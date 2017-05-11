@@ -529,6 +529,7 @@ int  ReadParamsFile(void)
 		return ret;
 	}
 
+	PrintDebug("%s %d", "stTxnCommCfg.ucCommType:",stPosParam.stTxnCommCfg.ucCommType);
 	sys_get_sn(sn_num, 9);	
 	PrintDebug("%s %s","sn_num:",sn_num);
 	PrintDebug("%s %d","sn_num_length:",strlen(sn_num));

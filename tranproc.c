@@ -1616,7 +1616,7 @@ uint8_t PosSettleTran(void)
 	stPosParam.ucReprint = 2;
 	SaveAppParam();
 	
-	ucRet = PrintTransTotal(1, stPosParam.lNowBatchNum);
+	ucRet = PrintTransTotal(0, stPosParam.lNowBatchNum);
 	
 	
 	stPosParam.ucReprint= 3;
@@ -9501,7 +9501,7 @@ uint8_t ConfirmTipAmount(void)
 
 		lcdCls();
 		DispMulLanguageString(0, 0, DISP_INVLINE|DISP_MEDIACY|DISP_CFONT, NULL, "VENTA");
-		lcdDisplay(0, 4, DISP_HFONT16, "MONTO PROPINA CORRECTO?");
+		lcdDisplay(0, 4, DISP_HFONT16, "MONTO CORRECTO?");
 		lcdDisplay(0, 5, DISP_HFONT16, "$ %ld.%02ld ",(SzTipAmount)/100,(SzTipAmount)%100);
 		lcdDisplay(210, 8, DISP_HFONT16 ,"1-SI");
 		lcdDisplay(210, 9, DISP_HFONT16, "2-NO");
@@ -9738,7 +9738,7 @@ uint8_t GetAmount_FromGasPlat()
 
 		lcdCls();
 		DispMulLanguageString(0, 0, DISP_INVLINE|DISP_MEDIACY|DISP_CFONT, NULL, "VENTA");
-		lcdDisplay(0, 4, DISP_HFONT16, "MONTO PROPINA CORRECTO?");
+		lcdDisplay(0, 4, DISP_HFONT16, "MONTO CORRECTO?");
 		lcdDisplay(0, 5, DISP_HFONT16, "$ %s ",(char*)PosCom.stTrans.oil_amount);
 		lcdDisplay(210, 8, DISP_HFONT16 ,"1-SI");
 		lcdDisplay(210, 9, DISP_HFONT16, "2-NO");
@@ -9898,6 +9898,7 @@ uint8_t GetBalance_FromBankPlat(int flag)
 
 	sprintf((char *)glSendPack.szTermID,     "%.*s", LEN_TERM_ID,   PosCom.stTrans.szPosId);
 	sprintf((char *)glSendPack.szMerchantID, "%.*s", LEN_MERCHANT_ID, PosCom.szUnitNum);
+	//sprintf((char *)glSendPack.szMerchantID, "%.*s", LEN_MERCHANT_ID, stPosParam.szMechId);
 	sprintf((char*)glSendPack.szField48, "%.*s",LEN_TERM_ID -4 ,stPosParam.szST);   // store id
 	sprintf((char *)glSendPack.szCurrencyCode, "484");
 	if(PRE_TIP_SALE ==PosCom.stTrans.TransFlag)
@@ -10462,6 +10463,10 @@ uint8_t GetRules_FromBankPlat(int flag)
 		if(PosCom.stTrans.isnip[0] =='0')
 		{
 			iRet =AppInputNip();
+			if( iRet == NO_DISP )		//NO_TRANS
+			{
+				return NO_DISP;
+			}
 		}
 	//choice consule
 		menuflag1 =0;
@@ -10519,6 +10524,15 @@ uint8_t GetRules_FromBankPlat(int flag)
 				lcdDisplay(0, 0, DISP_HFONT16|DISP_MEDIACY|DISP_INVLINE, "IMPORTE");
 				lcdDisplay(0, 4, DISP_HFONT16|DISP_MEDIACY, "INDIQUE IMPORTE:");
 				lcdFlip();
+
+				memset(sTempBuff,0,sizeof(sTempBuff));
+				lcdDisplay(0, 7, DISP_CFONT, "            $");
+				lcdFlip();
+				iRet = kbGetString(KB_EN_NUM+KB_EN_FLOAT+KB_EN_BIGFONT+KB_EN_REVDISP+KB_EN_SHIFTLEFT, 0, 10, (stPosParam.ucOprtLimitTime*1000), (char *)sTempBuff);
+				if( iRet<0 )
+				{
+					return E_TRANS_CANCEL;
+				}
 			}
 			else
 			{
@@ -10526,29 +10540,54 @@ uint8_t GetRules_FromBankPlat(int flag)
 				lcdDisplay(0, 0, DISP_HFONT16|DISP_MEDIACY|DISP_INVLINE, "LITROS");
 				lcdDisplay(0, 4, DISP_HFONT16|DISP_MEDIACY, "INDIQUE LITROS:");
 				lcdFlip();
-			}
 
-
-			memset(sTempBuff,0,sizeof(sTempBuff));
-			{
 				lcdGoto(120, 7);
-				lcdDisplay(0, 7, DISP_CFONT, "           $");
+				memset(sTempBuff,0,sizeof(sTempBuff));
+				lcdDisplay(0, 7, DISP_CFONT, "            ");
 				lcdFlip();
 				iRet = kbGetString(KB_EN_NUM+KB_EN_FLOAT+KB_EN_BIGFONT+KB_EN_REVDISP+KB_EN_SHIFTLEFT, 0, 10, (stPosParam.ucOprtLimitTime*1000), (char *)sTempBuff);
 				if( iRet<0 )
 				{
 					return E_TRANS_CANCEL;
-				}		
+				}
+			}
+
+
+			//memset(sTempBuff,0,sizeof(sTempBuff));
+			{
+				//lcdGoto(120, 7);
+				
+				//lcdDisplay(0, 7, DISP_CFONT, "           $");
+				//lcdFlip();
+				//iRet = kbGetString(KB_EN_NUM+KB_EN_FLOAT+KB_EN_BIGFONT+KB_EN_REVDISP+KB_EN_SHIFTLEFT, 0, 10, (stPosParam.ucOprtLimitTime*1000), (char *)sTempBuff);
+				//if( iRet<0 )
+				//{
+				//	return E_TRANS_CANCEL;
+				//}		
 				szcount= atol((char *)sTempBuff);
+
+				//amount equal 0,must warnning
+				if(szcount ==0)
+				{
+					lcdCls();
+					lcdDisplay(0, 0, DISP_HFONT16|DISP_MEDIACY|DISP_INVLINE, "INPUT AGAIN");
+					lcdFlip();
+					for(ucRet=0;ucRet <3;ucRet++)
+					{
+						sysBeep();
+						sysDelayMs(500);
+					}
+					continue;
+				}
+				
 				if(PosCom.stTrans.saletype[0] == '1')
 				{
-				/*
+				
 					szAmount = BcdToLong(PosCom.stTrans.sAmount, 6);
 					if(szcount > szAmount)
 					{
 						continue;
 					}
-				*/
 				}
 				else if(PosCom.stTrans.saletype[0] == '2')
 				{

@@ -524,7 +524,7 @@ void NetpayPrtBalance(void)
 		
 		if (stPosParam.ucPrnTitleFlag == PARAM_OPEN)
 		{
-			newprnLogo(85,0,200,65,(uint8_t *)Bmp_Prn);
+			newprnLogo(85,0,200,120,(uint8_t *)Bmp_Prn);
 		}
 		else
 		{
@@ -619,7 +619,7 @@ void PrtPreAuthTicket(int flag)
     	}
 	if (stPosParam.ucPrnTitleFlag == PARAM_OPEN)
 	{
-      		newprnLogo(85,0,200,65,(uint8_t *)Bmp_Prn);
+      		newprnLogo(85,0,200,120,(uint8_t *)Bmp_Prn);
     	}
 
 	prnPrintf("\n");	
@@ -652,6 +652,12 @@ void PrtPreAuthTicket(int flag)
 	prnPrintf("%s", tmp_printdata);  
 	prnPrintf("\n");
 
+	memset(tmp_printdata,0,sizeof(tmp_printdata));
+	MakeFormatPrintDate(PosCom.stTrans.szDate,tmp_printdata);
+
+	prnPrintf("%s%s           %s%.2s:%.2s:%.2s\n","FECHA: ",tmp_printdata, "HORA: ",
+			&PosCom.stTrans.szTime[0], &PosCom.stTrans.szTime[2], &PosCom.stTrans.szTime[4]);
+	prnPrintf("\n");
 	prnPrintf("%s\n", "               C-L-I-E-N-T-E");
 
 	// 卡有效期
@@ -686,7 +692,7 @@ void PrtPreAuthTicket(int flag)
 
 	PrnSmallFontData();
 
-	prnPrintf("APPOBACION:%s        CARGO:%06ld\n", PosCom.stTrans.szAuthNo,PosCom.stTrans.lTraceNo);//water NO
+	prnPrintf("APROBACION:%s        CARGO:%06ld\n", PosCom.stTrans.szAuthNo,PosCom.stTrans.lTraceNo);//water NO
 
 	if(PosCom.ucSwipedFlag == CARD_INSERTED)
 	{
@@ -827,7 +833,8 @@ void NetpayPrtTranTicket(int flag)
 		
 		if (stPosParam.ucPrnTitleFlag == PARAM_OPEN)
 		{
-			newprnLogo(85,0,200,65,(uint8_t *)Bmp_Prn);
+			//newprnLogo(85,0,200,65,(uint8_t *)Bmp_Prn);
+			newprnLogo(85,0,200,120,(uint8_t *)Bmp_Prn);
 		}
 		else
 		{
@@ -882,11 +889,11 @@ void NetpayPrtTranTicket(int flag)
 		{
 			prnPrintf("%s\n", "             C-O-M-E-R-C-I-O");
 		}
-		else
+	/*	else
 		{
 			prnPrintf("%s\n", "               C-L-I-E-N-T-E");
 		}
-
+	*/
 // 卡有效期
 
 		if ( strlen((char *)PosCom.stTrans.szExpDate)==4 )
@@ -1020,7 +1027,7 @@ void NetpayPrtTranTicket(int flag)
 
 		PrnSmallFontData();
 
-		prnPrintf("APPOBACION:%s        CARGO:%06ld\n", PosCom.stTrans.szAuthNo,PosCom.stTrans.lTraceNo);//water NO
+		prnPrintf("APROBACION:%s        CARGO:%06ld\n", PosCom.stTrans.szAuthNo,PosCom.stTrans.lTraceNo);//water NO
 
 		if(PosCom.ucSwipedFlag == CARD_INSERTED)
 		{
@@ -1048,11 +1055,12 @@ void NetpayPrtTranTicket(int flag)
 		if(PosCom.stTrans.PinCheckSuccessFlag == 1)
 		{
 			PrnBlackEngData();
-			prnPrintf("               PIN VERIFICADO \n");	
+			prnPrintf("              PIN VERIFICADO \n");	
 		}
 		prnPrintf("\n");
+		PrnSmallFontData();
 
-		if ( j==0 && stPosParam.ucTicketNum=='2' )
+		if ( j==0 && stPosParam.ucTicketNum=='2' &&	 flag != REPRINT)
 		{
 		    PrnSmallFontData();
 		    if ( j!=2 )
@@ -1077,9 +1085,7 @@ void NetpayPrtTranTicket(int flag)
 				      prnPrintf("\n\n");
 				 }
 			    prnPrintf("FIRMA_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n");
-			    //prnPrintf("I ACKNOWLEDGE SATISFACTORY RECEIPT OF RELATIVE  GOODS/SERVICE\n");
-			    //Reconozco satisfactoriamente la recepcion de bienes relativos  /  servicios
-			    prnPrintf("RECONOZCO SATISFACTORIAMENTE LA RECEPCION DE BIENES RELATIVOS/SERVICIOS");
+			   // prnPrintf("RECONOZCO SATISFACTORIAMENTE LA RECEPCION DE BIENES RELATIVOS/SERVICIOS\n");
 
 		    }
 		}
@@ -1089,16 +1095,33 @@ void NetpayPrtTranTicket(int flag)
 		{
 			if(PosCom.stTrans.CtlFlag ==1)
 			{
-				prnPrintf("            TIMM CALZADA/GUILLERMO \n");
+				if(PosCom.stTrans.PinCheckSuccessFlag == 1)
+				{
+					prnPrintf("            GASOLINA MAGNA FLEET \n");
+				}
+				else
+				{
+					//prnPrintf("            SOSA G/CLAUDIA ELIZABETH \n");
+					prnPrintf("            %s\n",PosCom.stTrans.CardHolderName);
+				}
+
 				memset(buf,0,sizeof(buf));
 				sprintf(buf,"%s\n","POR ESTE PAGARE ME OBLIGO INCONDICIONALMENTE A PAGAR A LA ORDEN DEL BANCO O LA INSTITUCION FINANCIERA QUE OTORGA EL CREDITO DEL IMPORTE DE ESTE TITULO.ESTE PAGAREPROCEDE DEL CONTRATO DE APERTURA DE CREDI-TO QUE EL BANCO O LA INSTITUCION FINANCI-ERA QUE OTORGA EL BANCO EL CREDITO Y EL TARJETAHA-BIENTE CELEBRADO.PAGARE NEGOCIABLE UNICAMENTE EN INSTITUCIONES DE CREDITO. ");
 
 				prnPrintf("%s \n",buf);
 
-				prnPrintf("%s \n",PosCom.stTrans.cf);
+				if(flag == REPRINT)
+				{
+					PrnBlackEngData();
+					prnPrintf("              DUPLICADO\n");
+				}
+				else
+				{
+					prnPrintf("%s \n",PosCom.stTrans.cf);
 
-				prnPrintf("                  %s\n",gstPosVersion.szVersion);
-
+					prnPrintf("                  %s\n",gstPosVersion.szVersion);
+				}
+				PrnSmallFontData();
 				prnPrintf("\n\n\n\n");
 			}
 			else
@@ -1113,9 +1136,19 @@ void NetpayPrtTranTicket(int flag)
 		}
 		else
 		{
-			prnPrintf("                    %s \n","TARJETA\n");
-			prnPrintf("                   %s\n",gstPosVersion.szVersion);
 
+			if(flag == REPRINT)
+			{
+				PrnBlackEngData();
+				prnPrintf("              DUPLICADO\n");
+			}
+			else
+			{
+				prnPrintf("                    %s \n","TARJETA\n");
+				prnPrintf("                   %s\n",gstPosVersion.szVersion);
+			}
+
+			PrnSmallFontData();
 			prnPrintf("\n\n\n");
 			if(PrintData() != OK)
 			{
@@ -4725,7 +4758,7 @@ uint8_t PrtTransTotal(uint8_t flag, int batchNo)
 	PrnBigFontChnData();
 	if(stPosParam.ucPrnTitleFlag == PARAM_OPEN)
 	{
-		newprnLogo(85,0,200,65,(uint8_t *)Bmp_Prn);
+		newprnLogo(85,0,200,120,(uint8_t *)Bmp_Prn);
 		prnPrintf("      SETTLE TOTALES\n");
 	}
 	else
@@ -5687,11 +5720,11 @@ void  NetpayPrintAmount(int flag)
 
 				if(PosCom.stTrans.saletype[0] == '1')
 				{
-					sprintf(buf, "IMPORTE.                        %s\n",buf1);
+					sprintf(buf, "IMPORTE.       $                %s\n",buf1);
 				}
 				else
 				{				
-					sprintf(buf, "LITROS.                           %s\n",buf1);
+					sprintf(buf, "LITROS.         $                 %s\n",buf1);
 				}
 				PrnBlackEngData();
 				prnPrintf(buf);
@@ -5713,11 +5746,11 @@ void  NetpayPrintAmount(int flag)
 
 				if(PosCom.stTrans.saletype[0] == '1')
 				{
-					sprintf(buf, "IMPORTE.                      %s\n",buf1);
+					sprintf(buf, "IMPORTE.     $                %s\n",buf1);
 				}
 				else
 				{				
-					sprintf(buf, "LITROS.                           %s\n",buf1);
+					sprintf(buf, "LITROS.       $                  %s\n",buf1);
 				}
 				PrnBlackEngData();
 				prnPrintf(buf);
@@ -5738,11 +5771,11 @@ void  NetpayPrintAmount(int flag)
 
 			if(PosCom.stTrans.saletype[0] == '1')
 			{
-				sprintf(buf, "IMPORTE.                    %s\n",buf1);
+				sprintf(buf, "IMPORTE.     $              %s\n",buf1);
 			}
 			else
 			{				
-				sprintf(buf, "LITROS.                       %s\n",buf1);
+				sprintf(buf, "LITROS.      $                %s\n",buf1);
 			}
 			PrnBlackEngData();
 			prnPrintf(buf);
@@ -6119,39 +6152,39 @@ uint8_t PrintBalanceCheck(char *T0,char *T1,char *T2,char *T3,char *T4,char *T5,
 
 uint8_t PrintFaildTicket(int flag,uint8_t *RSP_CODE,uint8_t *szErrorReason)
 {
-//	char  szPrnTitle[200];
+	//	char  szPrnTitle[200];
 	int iRet;
 	char printDate[30] = {0};
 	char szCardTemp[30];
 	char buf1[200],buf2[200];
-	
+
 	lcdClrLine(2, 7);
-  	DispMulLanguageString(0, 4, DISP_CFONT|DISP_MEDIACY, NULL, "IMPRIMIENDO...");
-    lcdFlip();
+	DispMulLanguageString(0, 4, DISP_CFONT|DISP_MEDIACY, NULL, "IMPRIMIENDO...");
+	lcdFlip();
 
 	iRet = prnInit();
-    if ( iRet!=OK )
-    {
-        lcdClrLine(2, 7);
-        DispMulLanguageString(0, 3, DISP_CFONT, NULL, "INIT PRINT FAIL");
-        lcdFlip();
-        kbGetKey();
-        return NO_DISP;
-    }
+	if ( iRet!=OK )
+	{
+		lcdClrLine(2, 7);
+		DispMulLanguageString(0, 3, DISP_CFONT, NULL, "INIT PRINT FAIL");
+		lcdFlip();
+		kbGetKey();
+		return NO_DISP;
+	}
 
 	if (stPosParam.ucPrnTitleFlag == PARAM_OPEN)
-    {
-      newprnLogo(85,0,200,65,(uint8_t *)Bmp_Prn);
-    }
+	{
+		newprnLogo(85,0,200,120,(uint8_t *)Bmp_Prn);
+	}
 
 	prnPrintf("\n");	
-    PrnBigFontChnData();
-    prnStep(2);
+	PrnBigFontChnData();
+	prnStep(2);
 	prnPrintf("%s\n", stPosParam.szMerchantName);
 	prnPrintf("%s\n", stPosParam.szStreet);  // 地址
 	prnPrintf("%s\n", stPosParam.szCity);  // city
 	prnPrintf("\n");  
-	
+
 	PrnBigFontChnData();
 
 	prnPrintf("%s\n", stPosParam.szST);  //store ID
@@ -6159,25 +6192,25 @@ uint8_t PrintFaildTicket(int flag,uint8_t *RSP_CODE,uint8_t *szErrorReason)
 	// 卡有效期
 	if ( strlen((char *)PosCom.stTrans.szExpDate)==4 )
 	{
-	    if ( memcmp(PosCom.stTrans.szExpDate, "0000", 4)!=0 )
-	    {
-	      	memset(buf2, 0, sizeof(buf2));
-	        if ( memcmp(PosCom.stTrans.szExpDate, "50", 2)>=0 )
-	        {
-	          memcpy((char*)buf2, "19", 2);
-	        }
-	        else
-	        {
-	          strcpy((char*)buf2, "20");
-	        }
-	        memcpy(buf2+2, PosCom.stTrans.szExpDate+2, 2);
-	        buf2[4] = '/';
-	        memcpy(buf2+5, PosCom.stTrans.szExpDate, 2);
-	        buf2[7] = 0;
-	     }
+		if ( memcmp(PosCom.stTrans.szExpDate, "0000", 4)!=0 )
+		{
+			memset(buf2, 0, sizeof(buf2));
+			if ( memcmp(PosCom.stTrans.szExpDate, "50", 2)>=0 )
+			{
+				memcpy((char*)buf2, "19", 2);
+			}
+			else
+			{
+				strcpy((char*)buf2, "20");
+			}
+			memcpy(buf2+2, PosCom.stTrans.szExpDate+2, 2);
+			buf2[4] = '/';
+			memcpy(buf2+5, PosCom.stTrans.szExpDate, 2);
+			buf2[7] = 0;
+		}
 	}
 
-	
+
 	if( strlen((char*)PosCom.stTrans.szCardNo) == 0)
 	{
 		memcpy(buf1,"***********",sizeof("***********"));
@@ -6185,8 +6218,8 @@ uint8_t PrintFaildTicket(int flag,uint8_t *RSP_CODE,uint8_t *szErrorReason)
 	else
 	{
 		memset(szCardTemp, 0, sizeof(szCardTemp));
-	    MaskPan(PosCom.stTrans.szCardNo, (uint8_t *)szCardTemp);
-	    MakeFormatCardNo((char *)szCardTemp, buf1);
+		MaskPan(PosCom.stTrans.szCardNo, (uint8_t *)szCardTemp);
+		MakeFormatCardNo((char *)szCardTemp, buf1);
 	}
 
 	prnPrintf("NUMERO DE CUENTA \n");  // 账号
@@ -6195,7 +6228,7 @@ uint8_t PrintFaildTicket(int flag,uint8_t *RSP_CODE,uint8_t *szErrorReason)
 	prnPrintf("TIEMPO\n"); 	
 	MakeFormatPrintDate(PosCom.stTrans.szDate,(uint8_t *)printDate);
 	prnPrintf("%s    %.2s:%.2s:%.2s\n",printDate, 
-		&PosCom.stTrans.szTime[0], &PosCom.stTrans.szTime[2], &PosCom.stTrans.szTime[4]);
+	&PosCom.stTrans.szTime[0], &PosCom.stTrans.szTime[2], &PosCom.stTrans.szTime[4]);
 
 	GetTransPrtName(PosCom.stTrans.iTransNo, buf1); 
 
@@ -6209,10 +6242,10 @@ uint8_t PrintFaildTicket(int flag,uint8_t *RSP_CODE,uint8_t *szErrorReason)
 		prnPrintf("TIPO DE TRANSACCION:\n");
 		prnPrintf("     %s\n",buf1);
 	}
-	
+
 	prnPrintf("CARGO %06ld   TERMINAL:%s\n", PosCom.stTrans.lTraceNo,PosCom.stTrans.szPosId);//water NO
 	prnPrintf("LOTE NUM %06ld\n",PosCom.stTrans.lBatchNumber);
-	
+
 
 	if( flag == 0 && strlen((char*)szErrorReason) != 0)
 	{

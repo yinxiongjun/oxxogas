@@ -1546,6 +1546,12 @@ uint8_t GetCardType(void)
 		PosCom.stTrans.CardType = 7;  //EDENRED card
 		strcpy((char*)PosCom.stTrans.AscCardType,"EDENRED");
 	}
+	else
+	{
+		PosCom.stTrans.CardType = 1;  //visa card
+		strcpy((char*)PosCom.stTrans.AscCardType,"VISA");
+	}
+	
 	PrintDebug("%s%d", "PosCom.stTrans.CardType:",PosCom.stTrans.CardType,PosCom.stTrans.AscCardType);
 	return OK;
 }

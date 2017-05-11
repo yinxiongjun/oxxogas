@@ -228,7 +228,7 @@ uint8_t AppGetAmount(int length, uint8_t flag)
 uint8_t AppGetTip()
 {
 	uint8_t	buf[17], szAmount[16],szOriAmount[16],szTipAmount[16];
-	int	amt, iRet;
+	int	amt, iRet,ucRet;
 	uint32_t	tmp;
 	uint32_t    lpreAuthTipAmount;
 	char *temp =NULL;
@@ -263,7 +263,8 @@ INPUTTIP:
 	temp= strchr(PosCom.stTrans.max_tip,'.');
 	if(temp!=NULL)
 	{
-		printf("stTemp.max_tip:%s\n",PosCom.stTrans.max_tip);
+		//printf("stTemp.max_tip:%s\n",PosCom.stTrans.max_tip);
+		PrintDebug("%s %s", "PosCom.stTrans.max_tip:",PosCom.stTrans.max_tip);
 		tiplen = temp -PosCom.stTrans.max_tip;
 		memcpy(tmp_hightip,PosCom.stTrans.max_tip,tiplen);
 		memcpy(tmp_lowtip,PosCom.stTrans.max_tip+tiplen+1,strlen(PosCom.stTrans.max_tip)-tiplen);
@@ -275,6 +276,16 @@ INPUTTIP:
 	}
 	if(amt > c8tip)
 	{
+		lcdCls();
+		//lcdSetFont("/usr/share/fonts/wqy-microhei.ttf", "GBK", 0, 20, 0);
+		DispMulLanguageString(0, 0, DISP_CFONT|DISP_MEDIACY|DISP_INVLINE, NULL, (char*)"VENTA");//DISP_HFONT16
+		DispMulLanguageString(0, 6, DISP_CFONT|DISP_MEDIACY, NULL, "MONTO PROPINA EXCEDIDA");
+		lcdFlip();
+		for(ucRet=0;ucRet <3;ucRet++)
+		{
+			sysBeep();
+			sysDelayMs(500);
+		}
 		goto INPUTTIP;
 	}
 	else
@@ -299,9 +310,9 @@ INPUTTIP:
 /************************
 ***重新的输入NIP
 *************************/
-uint8_t AppInputNip()
+int AppInputNip()
 {
-	uint8_t iRet;
+	int  iRet,ucRet;
 	uint8_t buf[10];
 	uint8_t buf2[10];
 	uint8_t len =0;
@@ -319,6 +330,20 @@ uint8_t AppInputNip()
 		if( iRet==KB_CANCEL || iRet==KB_TIMEOUT )
 		{
 			return NO_DISP;
+		}
+		if(iRet !=4)
+		{
+			lcdCls();
+			lcdSetFont("/usr/share/fonts/wqy-microhei.ttf", "GBK", 0, 20, 0);
+			DispMulLanguageString(0, 0, DISP_CFONT|DISP_MEDIACY|DISP_INVLINE, NULL, (char*)"VENTA");//DISP_HFONT16
+			DispMulLanguageString(0, 6, DISP_CFONT|DISP_MEDIACY, NULL, "INGRESE 4 DIGITOS");
+			lcdFlip();
+			for(ucRet=0;ucRet <3;ucRet++)
+			{
+				sysBeep();
+				sysDelayMs(500);
+			}
+			continue;
 		}
 
 		lcdCls();
@@ -339,12 +364,14 @@ uint8_t AppInputNip()
 			lcdCls();
 			lcdSetFont("/usr/share/fonts/wqy-microhei.ttf", "GBK", 0, 20, 0);
 			DispMulLanguageString(0, 0, DISP_CFONT|DISP_MEDIACY|DISP_INVLINE, NULL, (char*)"VENTA");
-			DispMulLanguageString(0, 6, DISP_CFONT|DISP_MEDIACY, NULL, "INPUT NIP ERROR");
-
-			if (kbGetKey() == KEY_CANCEL)
+			DispMulLanguageString(0, 6, DISP_CFONT|DISP_MEDIACY, NULL, "DATO INCORRECTO");
+			lcdFlip();
+			for(ucRet=0;ucRet <3;ucRet++)
 			{
-				return NO_DISP;
+				sysBeep();
+				sysDelayMs(500);
 			}
+			continue;
 		}
 		else
 		{
@@ -490,7 +517,7 @@ uint8_t AppGetBomba()
 ***************************************************/
 uint8_t AppGetCtlvalue(uint8_t flag)
 {
-	uint8_t iRet;
+	uint8_t iRet,ucRet;
 	uint8_t buf[20]={0};
 	uint8_t buf2[100];
 	uint8_t old_transid =0;
@@ -595,6 +622,17 @@ uint8_t AppGetCtlvalue(uint8_t flag)
 				{
 					memset(PosCom.stTrans.plate,0,sizeof(PosCom.stTrans.plate));
 					memset(buf,0,sizeof(buf));
+
+					lcdCls();
+					lcdSetFont("/usr/share/fonts/wqy-microhei.ttf", "GBK", 0, 20, 0);
+					DispMulLanguageString(0, 0, DISP_CFONT|DISP_MEDIACY|DISP_INVLINE, NULL, (char*)"VENTA");//DISP_HFONT16
+					DispMulLanguageString(0, 6, DISP_CFONT|DISP_MEDIACY, NULL, "DATO INCORRECTO");
+					lcdFlip();
+					for(ucRet=0;ucRet <3;ucRet++)
+					{
+						sysBeep();
+						sysDelayMs(500);
+					}
 					goto INPUT_PLACE;
 				}
 			}
@@ -3264,7 +3302,9 @@ uint8_t InsertCardProc(uint8_t bShowDefTranName)
 		}
 	}
 
+	//先下电
 	//iccPowerDown(ICC_USERCARD);
+	
 	PosCom.ucSwipedFlag = CARD_INSERTED;
 
 		//余额查询直接退出
@@ -3662,7 +3702,7 @@ void DispTransName(void)
 	    break;
 
 	case POS_SETT:
-		DispMulLanguageString(0, 0, DISP_CFONT|DISP_MEDIACY|DISP_INVLINE, NULL, "     SETTLE     ");
+		DispMulLanguageString(0, 0, DISP_CFONT|DISP_MEDIACY|DISP_INVLINE, NULL, "     CIERRE     ");
 		break;
 
 	case POS_BATCH_UP:
@@ -5410,7 +5450,7 @@ int MainMenuDispFlushMenu(int iStartKey, int iEndKey, int iTimeOut,int flag)
 			}
 			else
 			{
-					lcdDisplay(20, (i*2+start_line), /*DISP_MEDIACY|*/DISP_CFONT, gstDynamicMenu.szDynamicMenu[t]);
+					lcdDisplay(10, (i*2+start_line), /*DISP_MEDIACY|*/DISP_CFONT, gstDynamicMenu.szDynamicMenu[t]);
 			}
 			lcdSetFont("/usr/share/fonts/wqy-microhei.ttf", "GBK", 0, 30, 0);
             }

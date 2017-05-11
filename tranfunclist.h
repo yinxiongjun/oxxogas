@@ -503,7 +503,7 @@ void GetRules_Field63(uint8_t *field63,uint8_t *szMsgCode);
 void GetAuth_Field63(uint8_t *field63,uint8_t tflag);
 
 void GetBalance_Field63(uint8_t *field63,uint8_t *szMsgCode);
-uint8_t AppInputNip(void);
+int AppInputNip(void);
 uint8_t AppInputDrivernum_nip(int flag);
 uint8_t Get_Rule_Balance_Feild63(uint8_t *szField63Buff);
 uint8_t CheckCardType(void);

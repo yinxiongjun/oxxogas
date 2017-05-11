@@ -2889,9 +2889,11 @@ Print:
 
 uint8_t PrintTransTotal(uint8_t bPrintAll,uint8_t ucTitleFlag)
 {
-	uint8_t		ucRet;
+	uint8_t		ucRet, nowtime[8];
 	int		iCnt,iRet;
 	NEWPOS_LOG_STRC	stLog;
+	uint8_t tmpdate_time[20] ={0};//current date & time
+	
 	char buf[200] ={0};
 	char buf1[200] ={0};
 	char buf2[200]={0};
@@ -2914,6 +2916,10 @@ uint8_t PrintTransTotal(uint8_t bPrintAll,uint8_t ucTitleFlag)
 	{
 		return E_NO_TRANS;
 	}
+
+	sysGetTime(nowtime);    //YYMMDDhhmmss
+	memcpy(tmpdate_time,"20",2);
+	PubBcd2Asc0(nowtime, 6, tmpdate_time+2);
 	
    	iRet = prnInit();
   	if ( iRet!=OK )
@@ -2928,7 +2934,7 @@ uint8_t PrintTransTotal(uint8_t bPrintAll,uint8_t ucTitleFlag)
 		return NO_DISP;
   	}
 	
-	newprnLogo(85,0,200,65,(uint8_t *)Bmp_Prn);
+	newprnLogo(85,0,200,120,(uint8_t *)Bmp_Prn);
 
 	PrnSmallFontData();
 	memset(buf1,0,sizeof(buf1));
@@ -2957,14 +2963,20 @@ uint8_t PrintTransTotal(uint8_t bPrintAll,uint8_t ucTitleFlag)
 	//MakeFormatPrintDate(PosCom.stTrans.szDate,printDate);
 	printf("PosCom.stTrans.szTransDate:%s\n",PosCom.stTrans.szTransDate);
 	
-	prnPrintf("%s%.2s%.2s%.2s           %s%.2s:%.2s:%.2s\n","FECHA: ",&PosCom.stTrans.szTransDate[2],
-		&PosCom.stTrans.szTransDate[4],&PosCom.stTrans.szTransDate[6],"HORA: ",
-		&PosCom.stTrans.szTime[0], &PosCom.stTrans.szTime[2], &PosCom.stTrans.szTime[4]);
 
+	PrintDebug("%s %s", "CURRENT_TIME",tmpdate_time);
+
+	memset(tmp_printdata,0,sizeof(tmp_printdata));
+	MakeFormatPrintDate(tmpdate_time,tmp_printdata);
+
+	prnPrintf("%s%s           %s%.2s:%.2s:%.2s\n","FECHA: ",tmp_printdata, "HORA: ",
+			&tmpdate_time[8], &tmpdate_time[10], &tmpdate_time[12]);
+
+
+//YYMMDDhhmmss
 	prnPrintf("TOTALES");
 
 	prnPrintf("\n");
-
 	
 	memset(&AllTransTable,0,sizeof(AllTransTable));
 	printf("stTransCtrl.iTransNum:%d\n",stTransCtrl.iTransNum);
@@ -2995,21 +3007,24 @@ uint8_t PrintTransTotal(uint8_t bPrintAll,uint8_t ucTitleFlag)
 			}
 		}
 
-		if(TransNum !=0)
+		if(bPrintAll ==1)
 		{
-			PrnBlackEngData();
-			prnPrintf("\nVISA\n");	
-			PrnBigFontChnData();
-
-			strcpy(SIGNALTransTable[0].szTransName,"Ventas  :"); // 消费名称
-			strcpy(SIGNALTransTable[1].szTransName,"Litros  :");
-
-			//PrnSmallFontData();
-			for( i = 0; i < 2; i++)
+			if(TransNum !=0)
 			{
-				prnPrintf("%s    %d  $  %ld.%02ld\n",SIGNALTransTable[i].szTransName,
-					SIGNALTransTable[i].iTotalTransNo,SIGNALTransTable[i].lTotalTransAmount/100,
-					SIGNALTransTable[i].lTotalTransAmount%100);
+				PrnBlackEngData();
+				prnPrintf("\nVISA\n");	
+				PrnBigFontChnData();
+
+				strcpy(SIGNALTransTable[0].szTransName,"Ventas  :"); // 消费名称
+				strcpy(SIGNALTransTable[1].szTransName,"Litros  :");
+
+				//PrnSmallFontData();
+				for( i = 0; i < 2; i++)
+				{
+					prnPrintf("%s    %d  $  %ld.%02ld\n",SIGNALTransTable[i].szTransName,
+						SIGNALTransTable[i].iTotalTransNo,SIGNALTransTable[i].lTotalTransAmount/100,
+						SIGNALTransTable[i].lTotalTransAmount%100);
+				}
 			}
 		}
 		break;
@@ -3040,23 +3055,24 @@ uint8_t PrintTransTotal(uint8_t bPrintAll,uint8_t ucTitleFlag)
 			}
 		}
 
-		if(TransNum !=0)
+		if(bPrintAll ==1)
 		{
-			PrnBlackEngData();
-			prnPrintf("\nVENTAS\n");	
-			PrnBigFontChnData();
-
-
-			strcpy(SIGNALTransTable[0].szTransName,"Ventas  :"); // 消费名称
-			strcpy(SIGNALTransTable[1].szTransName,"Litros  :");
-			//PrnSmallFontData();
-
-			for( i = 0; i < 2; i++)
+			if(TransNum !=0)
 			{
-				prnPrintf("%s    %d  $  %ld.%02ld\n",SIGNALTransTable[i].szTransName,
-					SIGNALTransTable[i].iTotalTransNo,SIGNALTransTable[i].lTotalTransAmount/100,
-					SIGNALTransTable[i].lTotalTransAmount%100);
-			
+				PrnBlackEngData();
+				prnPrintf("\nMCARD\n");	
+				PrnBigFontChnData();
+
+				strcpy(SIGNALTransTable[0].szTransName,"Ventas  :"); // 消费名称
+				strcpy(SIGNALTransTable[1].szTransName,"Litros  :");
+
+				//PrnSmallFontData();
+				for( i = 0; i < 2; i++)
+				{
+					prnPrintf("%s    %d  $  %ld.%02ld\n",SIGNALTransTable[i].szTransName,
+						SIGNALTransTable[i].iTotalTransNo,SIGNALTransTable[i].lTotalTransAmount/100,
+						SIGNALTransTable[i].lTotalTransAmount%100);
+				}
 			}
 		}
 		
@@ -3088,23 +3104,24 @@ uint8_t PrintTransTotal(uint8_t bPrintAll,uint8_t ucTitleFlag)
 			}
 		}
 
-		if(TransNum !=0)
+		if(bPrintAll ==1)
 		{
-			PrnBlackEngData();
-			prnPrintf("\nAMEX\n");	
-			PrnBigFontChnData();
-
-
-			strcpy(SIGNALTransTable[0].szTransName,"Ventas  :"); // 消费名称
-			strcpy(SIGNALTransTable[1].szTransName,"Litros  :");
-			//PrnSmallFontData();
-
-			for( i = 0; i < 2; i++)
+			if(TransNum !=0)
 			{
-				prnPrintf("%s    %d  $  %ld.%02ld\n",SIGNALTransTable[i].szTransName,
-					SIGNALTransTable[i].iTotalTransNo,SIGNALTransTable[i].lTotalTransAmount/100,
-					SIGNALTransTable[i].lTotalTransAmount%100);
-			
+				PrnBlackEngData();
+				prnPrintf("\nAMEX\n");	
+				PrnBigFontChnData();
+
+				strcpy(SIGNALTransTable[0].szTransName,"Ventas  :"); // 消费名称
+				strcpy(SIGNALTransTable[1].szTransName,"Litros  :");
+
+				//PrnSmallFontData();
+				for( i = 0; i < 2; i++)
+				{
+					prnPrintf("%s    %d  $  %ld.%02ld\n",SIGNALTransTable[i].szTransName,
+						SIGNALTransTable[i].iTotalTransNo,SIGNALTransTable[i].lTotalTransAmount/100,
+						SIGNALTransTable[i].lTotalTransAmount%100);
+				}
 			}
 		}
 		break;
@@ -3135,23 +3152,24 @@ uint8_t PrintTransTotal(uint8_t bPrintAll,uint8_t ucTitleFlag)
 				return ucRet;
 			}
 		}
-		if(TransNum !=0)
+		if(bPrintAll ==1)
 		{
-			PrnBlackEngData();
-			prnPrintf("\nPCLAVE\n");	
-			PrnBigFontChnData();
-
-
-			strcpy(SIGNALTransTable[0].szTransName,"Ventas  :"); // 消费名称
-			strcpy(SIGNALTransTable[1].szTransName,"Litros  :");
-			//PrnSmallFontData();
-
-			for( i = 0; i < 2; i++)
+			if(TransNum !=0)
 			{
-				prnPrintf("%s    %d  $  %ld.%02ld\n",SIGNALTransTable[i].szTransName,
-					SIGNALTransTable[i].iTotalTransNo,SIGNALTransTable[i].lTotalTransAmount/100,
-					SIGNALTransTable[i].lTotalTransAmount%100);
-			
+				PrnBlackEngData();
+				prnPrintf("\nPCLAVE\n");	
+				PrnBigFontChnData();
+
+				strcpy(SIGNALTransTable[0].szTransName,"Ventas  :"); // 消费名称
+				strcpy(SIGNALTransTable[1].szTransName,"Litros  :");
+
+				//PrnSmallFontData();
+				for( i = 0; i < 2; i++)
+				{
+					prnPrintf("%s    %d  $  %ld.%02ld\n",SIGNALTransTable[i].szTransName,
+						SIGNALTransTable[i].iTotalTransNo,SIGNALTransTable[i].lTotalTransAmount/100,
+						SIGNALTransTable[i].lTotalTransAmount%100);
+				}
 			}
 		}
 		break;
@@ -3180,22 +3198,24 @@ uint8_t PrintTransTotal(uint8_t bPrintAll,uint8_t ucTitleFlag)
 				return ucRet;
 			}
 		}
-		if(TransNum != 0)
+		if(bPrintAll ==1)
 		{
-			PrnBlackEngData();
-			prnPrintf("\nSODEXO\n");	
-			PrnBigFontChnData();
-
-			strcpy(SIGNALTransTable[0].szTransName,"Ventas  :"); // 消费名称
-			strcpy(SIGNALTransTable[1].szTransName,"Litros  :");
-			//PrnSmallFontData();
-
-			for( i = 0; i < 2; i++)
+			if(TransNum !=0)
 			{
-				prnPrintf("%s    %d  $  %ld.%02ld\n",SIGNALTransTable[i].szTransName,
-					SIGNALTransTable[i].iTotalTransNo,SIGNALTransTable[i].lTotalTransAmount/100,
-					SIGNALTransTable[i].lTotalTransAmount%100);
-			
+				PrnBlackEngData();
+				prnPrintf("\nSODEXO\n");	
+				PrnBigFontChnData();
+
+				strcpy(SIGNALTransTable[0].szTransName,"Ventas  :"); // 消费名称
+				strcpy(SIGNALTransTable[1].szTransName,"Litros  :");
+
+				//PrnSmallFontData();
+				for( i = 0; i < 2; i++)
+				{
+					prnPrintf("%s    %d  $  %ld.%02ld\n",SIGNALTransTable[i].szTransName,
+						SIGNALTransTable[i].iTotalTransNo,SIGNALTransTable[i].lTotalTransAmount/100,
+						SIGNALTransTable[i].lTotalTransAmount%100);
+				}
 			}
 		}
 
@@ -3225,23 +3245,24 @@ uint8_t PrintTransTotal(uint8_t bPrintAll,uint8_t ucTitleFlag)
 				return ucRet;
 			}
 		}
-		if(TransNum !=0)
+		if(bPrintAll ==1)
 		{
-			PrnBlackEngData();
-			prnPrintf("\nTODITO\n");	
-			PrnBigFontChnData();
-
-
-			strcpy(SIGNALTransTable[0].szTransName,"Ventas  :"); // 消费名称
-			strcpy(SIGNALTransTable[1].szTransName,"Litros  :");
-			//PrnSmallFontData();
-
-			for( i = 0; i < 2; i++)
+			if(TransNum !=0)
 			{
-				prnPrintf("%s    %d  $  %ld.%02ld\n",SIGNALTransTable[i].szTransName,
-					SIGNALTransTable[i].iTotalTransNo,SIGNALTransTable[i].lTotalTransAmount/100,
-					SIGNALTransTable[i].lTotalTransAmount%100);
-			
+				PrnBlackEngData();
+				prnPrintf("\nTODITO\n");	
+				PrnBigFontChnData();
+
+				strcpy(SIGNALTransTable[0].szTransName,"Ventas  :"); // 消费名称
+				strcpy(SIGNALTransTable[1].szTransName,"Litros  :");
+
+				//PrnSmallFontData();
+				for( i = 0; i < 2; i++)
+				{
+					prnPrintf("%s    %d  $  %ld.%02ld\n",SIGNALTransTable[i].szTransName,
+						SIGNALTransTable[i].iTotalTransNo,SIGNALTransTable[i].lTotalTransAmount/100,
+						SIGNALTransTable[i].lTotalTransAmount%100);
+				}
 			}
 		}
 		
@@ -3272,22 +3293,24 @@ uint8_t PrintTransTotal(uint8_t bPrintAll,uint8_t ucTitleFlag)
 			}
 		}
 
-		if(TransNum !=0)
+		if(bPrintAll ==1)
 		{
-			PrnBlackEngData();
-			prnPrintf("\nEDENRED\n");	
-			PrnBigFontChnData();
-
-			strcpy(SIGNALTransTable[0].szTransName,"Ventas  :"); // 消费名称
-			strcpy(SIGNALTransTable[1].szTransName,"Litros  :");
-			//PrnSmallFontData();
-
-			for( i = 0; i < 2; i++)
+			if(TransNum !=0)
 			{
-				prnPrintf("%s    %d  $  %ld.%02ld\n",SIGNALTransTable[i].szTransName,
-					SIGNALTransTable[i].iTotalTransNo,SIGNALTransTable[i].lTotalTransAmount/100,
-					SIGNALTransTable[i].lTotalTransAmount%100);
-			
+				PrnBlackEngData();
+				prnPrintf("\nEDENRED\n");	
+				PrnBigFontChnData();
+
+				strcpy(SIGNALTransTable[0].szTransName,"Ventas  :"); // 消费名称
+				strcpy(SIGNALTransTable[1].szTransName,"Litros  :");
+
+				//PrnSmallFontData();
+				for( i = 0; i < 2; i++)
+				{
+					prnPrintf("%s    %d  $  %ld.%02ld\n",SIGNALTransTable[i].szTransName,
+						SIGNALTransTable[i].iTotalTransNo,SIGNALTransTable[i].lTotalTransAmount/100,
+						SIGNALTransTable[i].lTotalTransAmount%100);
+				}
 			}
 		}
 		
@@ -4891,7 +4914,7 @@ uint8_t NetpayPrintTransTotal(uint8_t bPrintAll,uint8_t ucTitleFlag)
 	
 //	if(stPosParam.ucPrnTitleFlag == PARAM_OPEN)
 //	{
-		newprnLogo(85,0,200,65,(uint8_t *)Bmp_Prn);
+		newprnLogo(85,0,200,120,(uint8_t *)Bmp_Prn);
 //	}
 
 	PrnBigFontChnData();
@@ -6360,7 +6383,7 @@ uint8_t PrintDetail(uint8_t bPrintAll,uint8_t ucTitleFlag)
 	PrnBigFontChnData();
 	if(stPosParam.ucPrnTitleFlag == PARAM_OPEN)
 	{
-		newprnLogo(85,0,200,65,(uint8_t *)Bmp_Prn);
+		newprnLogo(85,0,200,120,(uint8_t *)Bmp_Prn);
 		prnPrintf("\n");
 	}
 	else
@@ -6814,7 +6837,7 @@ uint8_t PrintCtlvolume(uint8_t bPrintAll)
 		return NO_DISP;
   	}
 	
-	newprnLogo(85,0,200,65,(uint8_t *)Bmp_Prn);
+	newprnLogo(85,0,200,120,(uint8_t *)Bmp_Prn);
 
 	PrnSmallFontData();
 	memset(buf1,0,sizeof(buf1));
@@ -6968,7 +6991,7 @@ uint8_t PrintTipDetail(uint8_t bPrintAll,uint8_t ucTitleFlag)
 	PrnBigFontChnData();
 	if(stPosParam.ucPrnTitleFlag == PARAM_OPEN)
 	{
-		newprnLogo(85,0,200,65,(uint8_t *)Bmp_Prn);
+		newprnLogo(85,0,200,120,(uint8_t *)Bmp_Prn);
 		prnPrintf("\n");
 	}
 	else
@@ -8173,7 +8196,7 @@ void  AdjustAppParam(void)
 
 	stPosParam.stTxnCommCfg.ucCommType = sGetDefaultCommType(gstPosCapability.uiCommType);
 
-	stPosParam.stTxnCommCfg.ucCommType = 'W';//先写死用于测试
+	//stPosParam.stTxnCommCfg.ucCommType = 'W';//先写死用于测试
 	switch (stPosParam.stTxnCommCfg.ucCommType)
 	{
 	case 'G':
@@ -8941,7 +8964,7 @@ uint8_t DealTmsParam(uint8_t *temp)
 			szParamContentLen = temp[iIdx]+temp[iIdx+1]*256;   // 标签内容长度
 			iIdx += 2;
 			
-			memset(stPosParam.stAddress3,0,sizeof(stPosParam.stAddress2));
+			memset(stPosParam.stAddress3,0,sizeof(stPosParam.stAddress3));
 			memcpy(stPosParam.stAddress3,temp+szParamContentiIdx,szParamContentLen);
 		}
 		else if( memcmp(temp+szParamiIdx,"66666005",szParamLen) == 0 )

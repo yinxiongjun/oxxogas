@@ -115,6 +115,8 @@ uint8_t ReverseTranProc(void)
 	{
 		return 1;
 	}
+	//needn't reversal
+	return 1;
 	
 	lcdCls();	
 	DispMulLanguageString(0, 0, DISP_CFONT|DISP_MEDIACY|DISP_INVLINE, NULL, "  AUTO REVERSAL ");
@@ -539,7 +541,10 @@ uint8_t UpdateReversalFile(uint8_t Err)
 {
 	uint8_t	szBuff[10];
 	uint8_t szBuff1[10];
+	//needn't reversal
+	return OK;
 
+	
 	memset(szBuff, 0, sizeof(szBuff));
 	if( Err==E_RECV_PACKET || Err==E_CHECK_MAC_VALUE || Err==E_RESOLVE_PACKET )
 	{

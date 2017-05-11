@@ -84,7 +84,7 @@ static int check_logon_auto(void)  //检查是否要自动签到
 	PrintDebug("%s %s", "nowtime",asctmp);
 */	
 	//24时以后更新
-	if(nowtime[3] ==0x24)
+	if(nowtime[3] ==0x00)
 		ret = 1;
 	else
 		ret = 0;
@@ -149,10 +149,18 @@ int query_down_flag(void)
                 req_cnt = 0;
                 return 1;
             }
-            else if(RetCode == Trans_Error)        //巡检失败
+           else if(RetCode == Trans_Error)        //巡检失败
             {
                 tms_info.down_falg = DOWN_FALG_NONE;
+                memset(tms_info.ver_info, 0, sizeof(tms_info.ver_info)); //clear ver info
                 save_tms_file(&tms_info);
+                req_cnt = 0;
+                return -3;
+            }
+            else if(RetCode == Trans_Doing || RetCode == Trans_Do_None) //add by liluchang
+            {
+                req_cnt++; //防止前一次的巡检因特殊原因还没执行完，不能就返回0出去
+                return -4; 
             }
             req_cnt++;
             return 0;

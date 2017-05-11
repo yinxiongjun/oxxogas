@@ -1695,6 +1695,8 @@ uint8_t ProcEmvTran(void)
 		PrintDebug("%s%d", "after emv_online_transaction:",iRet);
 	}
 	iErrNo = iRet?errno:0;
+	PrintDebug("%s%d", "after emv_online_transaction iErrno:",errno);
+
 	// After that do not modify the iRet and iError values
 	memset(szBuffer,0,sizeof(szBuffer));
 	szBuffer[0] = 0xFF;
@@ -1704,18 +1706,27 @@ uint8_t ProcEmvTran(void)
 	{
 		GetAndSetQpbocElement();
 		SaveIccFailureTranData(TRUE);
-		strcpy((char*)PosCom.stTrans.szEntryMode,"052");
+		//strcpy((char*)PosCom.stTrans.szEntryMode,"052");
+		memcpy(PosCom.stTrans.szEntryMode, "550", 3);
+
 		if (PosCom.ucPinEntry)
 		{
-			strcpy((char*)PosCom.stTrans.szEntryMode,"051");
+			//strcpy((char*)PosCom.stTrans.szEntryMode,"051");
+			memcpy(PosCom.stTrans.szEntryMode, "550", 3);
+
 		}
 		SaveIccFailureFile();
 	}
 
 	// Before that do not modify the iRet and iError values
 ERRCODE:
-	PrintDebug("%s%d", "iErrNo:",iErrNo);
 
+	PrintDebug("%s%d", "iErrNo:",iErrNo);
+/*	if(PosCom.stTrans.CardType ==7 && iErrNo==EMV_ERRNO_DECLINE)
+	{
+		return E_TRANS_CANCEL;
+	}
+*/
 	if( iErrNo==EMV_ERRNO_ONLINE_TIMEOUT || iErrNo==EMV_ERRNO_CANCEL ||iErrNo==EMV_ERRNO_ONLINE_ERROR)
 	{
 		//if(PosCom.stTrans.CardType !=7)
@@ -1825,6 +1836,10 @@ ERRCODE:
 		ucScripRet = FALSE;
 	}
 
+	//read cardholder name
+	emv_get_data_element("\x5F20", 1, &uclen, PosCom.stTrans.CardHolderName);
+	PrintDebug("% %s","Tag5F20:",PosCom.stTrans.CardHolderName);
+	
 	if (PosCom.stTrans.iTransNo== EC_TOPUP_CASH || PosCom.stTrans.iTransNo== EC_TOPUP_SPEC
 		|| PosCom.stTrans.iTransNo== EC_TOPUP_NORAML || PosCom.stTrans.iTransNo == EC_VOID_TOPUP)
 	{

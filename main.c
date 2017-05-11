@@ -677,24 +677,24 @@ int main(int argc, char *argv[])
 	  		kbFlush();
 	  		ucRet=kbGetKey();
 	  		if(ucRet==KEY_ENTER)
-	  		{
-        		if (stPosParam.ucReprint==1)
-          			reprintTrans(0);
-        		else if(stPosParam.ucReprint==2)
-        		{
-          			ucRet = ReadLastTotal();
-          			ucRet = PrtTransTotal(0, 0);
-				PrintSettleBatch();
-				AfterSettleTran();
-        		}
-        		else if(stPosParam.ucReprint==3)
-        		{
-				PrintSettleBatch();
-				AfterSettleTran();
-        		}
+		  	{
+	        		if (stPosParam.ucReprint==1)
+	          			reprintTrans(0);
+	        		else if(stPosParam.ucReprint==2)
+	        		{
+	          			ucRet = ReadLastTotal();
+	          			ucRet = PrtTransTotal(0, 0);
+					PrintSettleBatch();
+					AfterSettleTran();
+	        		}
+	        		else if(stPosParam.ucReprint==3)
+	        		{
+					PrintSettleBatch();
+					AfterSettleTran();
+	        		}
 
-        		break;
-	  		}
+	        		break;
+		  	}
 	  		else if(ucRet==KEY_CANCEL)
 	  		{
 				if(stPosParam.ucReprint!=1)
@@ -1007,6 +1007,7 @@ void InitPos(int iRet)
 	SaveAppParam();
 
 	ReadPubComm();//获取当前通讯方式，从公共文件里面去取
+	PrintDebug("%s %d", "ReadPubComm>>>ucCommType:",stPosParam.stTxnCommCfg.ucCommType);
 	
 	if(stPosParam.ucSupportSM == PARAM_OPEN)
 		pboc_sm_enable(1); //支持国密算法
